@@ -1,0 +1,106 @@
+{% extends 'layout.html.twig' %}
+{% block title %}Admin - Edit Article #{{article.id}}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        {% if article.id is not empty %}
+        <h2 class="display-4">Update Article #{{article.id}}</h2>
+        {% else %}
+        <h2 class="display-4">Create Article</h2>
+        {% endif %}
+        <hr>
+        <div class="col-12">
+            {% if errorForm is not null %}
+            <div class="alert alert-danger" role="alert">
+                {{errorForm}}
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-12">
+            <form method="POST">
+                <input type="text" class="d-none" id="id" name="id" value="{{article.id}}">
+                <div class="form-group">
+                    <label for="model">Model *</label>
+                    <input type="text" class="form-control" id="model" name="model" value="{{article.model}}">
+                </div>
+                <div class="form-group">
+                    <label for="brand_id">Brand</label>
+                    <select class="form-control" id="brand_id" name="brand_id">
+                        <option value={{article.brand_id}}>{{article.brand_name}}</option>
+                        {% for brand in brands %}
+                        {% if brand.id != article.brand_id %}
+                        <option value={{brand.id}}>{{brand.name}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="color_id">Color</label>
+                    <select class="form-control" id="color_id" name="color_id">
+                        <option value={{article.color_id}}>{{article.color_name}}</option>
+                        {% for color in colors %}
+                        {% if color.id != article.color_id %}
+                        <option value={{color.id}}>{{color.name}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="size_id">Size</label>
+                    <select class="form-control" id="size_id" name="size_id">
+                        <option value={{article.size_id}}>{{article.size}}</option>
+                        {% for size in sizes %}
+                        {% if size.id != article.size_id %}
+                        <option value={{size.id}}>{{size.size}}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price *</label>
+                    <input type="text" class="form-control" id="price" name="price" value="{{article.price}}">
+                </div>
+                <div class="form-group">
+                    <label for="qty">Qty *</label>
+                    <input type="text" class="form-control" id="qty" name="qty" value="{{article.qty}}">
+                </div>
+
+                <p class="h4 mb-3">Ajouter des images
+                    <a href="#" onclick="addInputImage()" class="btn btn-sm btn-pumpkin mb-3 m-auto" id="btn-add-image">
+                        <i class="fas fa-plus-circle"></i></a>
+                </p>
+                {% set countImg = article.images|length %}
+                {% for i in range(0, countImg) %}
+                <div class="form-group image-cls" id="images">
+                    <label for="image_id_{{i + 1}}">Image {{i + 1}}</label>
+                    <input type="text" class="form-control animal-image" id="image_id_{{i + 1}}"
+                        value="{{ article.images[i].url }}" name="image{{i + 1}}">
+                    <input type="hidden" value="{{ article.images[i].id }}" name="image_id_{{i + 1}}">
+                </div>
+                {% endfor %}
+                <div class="text-center">
+                    <img src="" alt="" class="img-fluid" id="img-display">
+                </div>
+                <div class="small">* Champs obligatoires</div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    var divImages = document.getElementById('images');
+    var counter = document.getElementsByClassName('image-cls').length;
+    addInputImage = () => {
+        var newdiv = document.createElement('div');
+        newdiv.innerHTML = '<label for="image">Image ' + (counter + 1) + '</label><input type="text" class="form-control" id="image" value="" name="image' + counter + '">';
+        divImages.appendChild(newdiv);
+        counter++;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'layout.html.twig' %}
+{% block title %}Commande validée{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="jumbotron bg-dark text-white">
+        <h1 class="display-4 text-center">Votre commande est validée</h1>
+        <div class="text-center">
+            <a href="/" class="btn btn-outline-primary btn-sm">Revenir au shop</a>
+        </div>
+        <hr class="my-4">
+        {% if session.transaction %}
+        <div class="text-center">
+            <a href="{{session.transaction}}" target="_blank" class="btn btn-primary my-5">Détails de votre transaction.</a>
+            <div class="row">
+                <img src="https://www.foxnetsoft.com/images/thumbs/0005839_stripe-direct-payment-credit-card.png" alt="" class="img-fluid m-auto" width="30%">
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

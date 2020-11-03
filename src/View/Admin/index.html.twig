@@ -1,0 +1,80 @@
+{% extends 'layout.html.twig' %}
+{% block title %}Admin - Index{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="jumbotron my-5 bg-dark text-white">
+        <h2 class="display-4">Commands :</h2>
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for command in commands %}
+                <tr>
+                    <th scope="row">{{command.id}}</th>
+                    <td>{{command.name}}</td>
+                    <td>{{command.address}}</td>
+                    <td>{{command.total}} $</td>
+                    <td>{{command.created_at|date('Y-m-d')}}</td>
+                    <td>
+                        <a href="/admin/deleteCommand/{{ command.id }}"
+                        class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="jumbotron my-5 bg-dark text-white">
+        <h2 class="display-4">Articles :</h2>
+        <div class="text-right my-3">
+            <a href="/admin/editArticle/" class="btn btn-sm btn-primary">New <i class="fas fa-plus-circle"></i></a>
+        </div>
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Color</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Img</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <th scope="row">{{article.id}}</th>
+                    <td>{{article.model}}</td>
+                    <td>{{article.brand_name}}</td>
+                    <td>{{article.size}}</td>
+                    <td>{{article.color_name}}</td>
+                    <td>{{article.price}} $</td>
+                    <td><img src="{{article.image.url}}" alt="" class="img-fluid" width="150px"></td>
+                    <td>{{article.qty}}</td>
+                    <td>
+                        <a href="/home/showArticle/{{ article.id }}" class="btn btn-sm btn-success my-2"><i
+                                class="fas fa-eye"></i></a>
+                        <a href="/admin/editArticle/{{ article.id }}" class="btn btn-sm btn-warning my-2"><i
+                                class="fas fa-edit"></i></a>
+                        <a href="/admin/deleteArticle/{{ article.id }}"
+                            class="btn btn-sm btn-danger my-2"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
