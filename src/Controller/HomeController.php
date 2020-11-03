@@ -21,7 +21,7 @@ class HomeController extends AbstractController
      */
     public function index()
     {
-        //$cartService = new CartService();
+        $cartService = new CartService();
 
         $brandManager = new BrandManager();
         $brands = $brandManager->selectAll();
@@ -38,7 +38,7 @@ class HomeController extends AbstractController
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             if (!empty($_POST['add_article'])) {
                 $article = $_POST['add_article'];
-                //$cartService->add($article);
+                $cartService->add($article);
             }
             // search
             if (!empty($_POST['search'])) {
@@ -71,13 +71,13 @@ class HomeController extends AbstractController
 
     public function showArticle($id)
     {
-        //$cartService = new CartService();
+        $cartService = new CartService();
         $articleManager = new ArticleManager();
         $article = $articleManager->selectOneById($id);
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             if (!empty($_POST['add_article'])) {
                 $article = $_POST['add_article'];
-                //$cartService->add($article);
+                $cartService->add($article);
             }
         }
         return $this->twig->render('Home/show_article.html.twig', ['article' => $article]);
@@ -85,12 +85,12 @@ class HomeController extends AbstractController
 
     public function cart()
     {
-        //$cartService = new CartService();
+        $cartService = new CartService();
         $errorForm = null;
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             if (isset($_POST['delete_id'])) {
                 $article = $_POST['delete_id'];
-                //$cartService->delete($article);
+                $cartService->delete($article);
             }
             if (isset($_POST['payment'])) {
                 if (!empty($_POST['name']) && !empty($_POST['address'])) {
@@ -101,11 +101,8 @@ class HomeController extends AbstractController
             }
         }
         return $this->twig->render('Home/cart.html.twig', [
-            // 'cartInfos' => $cartService->cartInfos() ? $cartService->cartInfos() : null,
-            // 'total' => $cartService->cartInfos() ? $cartService->totalCart() : null,
-            // 'errorForm' => $errorForm
-            'cartInfos' => null,
-            'total' => null,
+            'cartInfos' => $cartService->cartInfos() ? $cartService->cartInfos() : null,
+            'total' => $cartService->cartInfos() ? $cartService->totalCart() : null,
             'errorForm' => $errorForm
         ]);
     }

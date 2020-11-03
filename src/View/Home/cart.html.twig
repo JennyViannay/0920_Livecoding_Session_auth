@@ -3,6 +3,7 @@
 
 {% block content %}
 <div class="container mt-5">
+    {{dump(session)}}
     {% if session.cart %}
     <table class="table">
         <thead>
@@ -19,7 +20,7 @@
             {% for article in cartInfos %}
             <tr>
                 <th scope="row">#</th>
-                <td>{{article.name}}</td>
+                <td>{{article.model}}</td>
                 <td>{{article.qty}}</td>
                 <td>{{article.price}}</td>
                 <td>{{article.price * article.qty }} $</td>

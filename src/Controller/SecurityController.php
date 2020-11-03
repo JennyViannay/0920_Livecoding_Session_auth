@@ -15,6 +15,9 @@ class SecurityController extends AbstractController
                 $user = $userManager->search($_POST['email']);
                 if ($user) {
                     if ($user->password === md5($_POST['password'])) {
+                        $_SESSION['username'] = $user->email;
+                        $_SESSION['id'] = $user->id;
+                        //$_SESSION['role'] = $user->role_id;
                         header('Location:/admin/index');
                     } else {
                         $error = 'Password incorrect !';
@@ -55,6 +58,8 @@ class SecurityController extends AbstractController
                     ];
                     $idUser = $userManager->insert($user);
                     if ($idUser) {
+                        $_SESSION['username'] = $user['email'];
+                        $_SESSION['id'] = $user['id'];
                         header('Location:/admin/index');
                     }
                 }
@@ -68,6 +73,6 @@ class SecurityController extends AbstractController
     public function logout()
     {
         session_destroy();
-        header('Location:/home/index');
+        header('Location:/');
     }
 }

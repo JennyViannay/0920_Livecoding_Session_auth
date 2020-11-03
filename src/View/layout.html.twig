@@ -23,16 +23,16 @@
         <a class="navbar-brand" href="/">Projet 2 </a>
         <ul class="nav">
             <li class="nav-item">
-                {# {% if session.cart %} #}
+                {% if session.cart %}
                 <a href="/home/cart" class="nav-link btn">
                     <i class="fas fa-shopping-cart text-white"></i>
                     <span class="badge badge-danger">{{ session.count }}</span>
                 </a>
-                {# {% else %} #}
+                {% else %}
                 <a href="/home/cart" class="nav-link btn"><i class="fas fa-shopping-cart text-white"></i></a>
-                {# {% endif %} #}
+                {% endif %}
             </li>
-            {# {% if session.username %} #}
+            {% if session.username %}
             <li class="nav-item">
                 <a href="/admin/index" class="nav-link btn"><i class="fas fa-user-ninja text-white"></i></a>
             </li>
@@ -40,11 +40,11 @@
                 <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-out-alt text-white"> {{session.username}}
                     </i></a>
             </li>
-            {# {% else %} #}
+            {% else %}
             <li class="nav-item">
                 <a href="/security/login" class="nav-link btn"><i class="fas fa-sign-in-alt text-white"></i></a>
             </li>
-            {# {% endif %} #}
+            {% endif %}
         </ul>
     </nav>
     {% block content %}{% endblock %}
