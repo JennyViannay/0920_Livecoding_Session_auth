@@ -272,4 +272,6 @@ class ArticleManager extends AbstractManager
         
         return $result;
     }
+
+
 }

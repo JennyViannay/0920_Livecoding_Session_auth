@@ -4,6 +4,7 @@
 {% block content %}
 <div class="container mt-5">
     {{dump(session)}}
+    {{dump(wishlist)}}
     {% if session.cart %}
     <table class="table">
         <thead>

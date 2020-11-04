@@ -10,13 +10,18 @@
         <h2 class="display-4">Create Article</h2>
         {% endif %}
         <hr>
+        {% if session.flash_message is not empty %}
+        {% for message in session.flash_message %}
         <div class="col-12">
-            {% if errorForm is not null %}
-            <div class="alert alert-danger" role="alert">
-                {{errorForm}}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>{{message}}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="clear_flash">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            {% endif %}
         </div>
+        {% endfor %}
+        {% endif %}
         <div class="col-12">
             <form method="POST">
                 <input type="text" class="d-none" id="id" name="id" value="{{article.id}}">

@@ -22,13 +22,13 @@ class SecurityController extends AbstractController
                         $_SESSION['role'] = $roleManager->selectOneById($user->role_id)['name'];
                         header('Location:/admin/index');
                     } else {
-                        $error = 'Password incorrect !';
+                        $_SESSION['flash_message'] = ["Password incorrect !"];
                     }
                 } else {
-                    $error = 'User not found';
+                    $_SESSION['flash_message'] = ['User not found'];
                 }
             } else {
-                $error = 'Tous les champs sont obligatoires !';
+                $_SESSION['flash_message'] = ['Tous les champs sont obligatoires !'];
             }
         }
         return $this->twig->render('Admin/login.html.twig', [
@@ -48,10 +48,10 @@ class SecurityController extends AbstractController
                 !empty($_POST['password2'])) {
                 $user = $userManager->search($_POST['email']);
                 if ($user) {
-                    $error = 'Email already exist';
+                    $_SESSION['flash_message'] = ['Email already exist'];
                 }
                 if ($_POST['password'] != $_POST['password2']) {
-                    $error = 'Password do not match';
+                    $_SESSION['flash_message'] = ['Password do not match'];
                 }
                 if ($error === null) {
                     $user = [

@@ -2,15 +2,16 @@
 
 namespace App\Controller;
 
-use App\Model\ArticleManager;
 use App\Service\CartService;
+use App\Service\FilterService;
+use App\Model\ArticleManager;
 use App\Model\BrandManager;
 use App\Model\ColorManager;
 use App\Model\SizeManager;
+use App\Model\WishlistManager;
 
 class HomeController extends AbstractController
 {
-
     /**
      * Display home page
      *
@@ -21,7 +22,9 @@ class HomeController extends AbstractController
      */
     public function index()
     {
+        $result = [];
         $cartService = new CartService();
+        $filterService = new FilterService();
 
         $brandManager = new BrandManager();
         $brands = $brandManager->selectAll();
@@ -35,37 +38,36 @@ class HomeController extends AbstractController
         $articleManager = new ArticleManager();
         $articles = $articleManager->selectAll();
 
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['add_article'])) {
                 $article = $_POST['add_article'];
                 $cartService->add($article);
             }
-            // search
-            if (!empty($_POST['search'])) {
-                $articles = $articleManager->searchByModel($_POST['search']);
+            if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
+                $articles = $filterService->search($_POST);
             }
-            // brand_id
-            if (!empty($_POST['brand_id'])) {
-                $articles = $articleManager->searchByBrand($_POST['brand_id']);
-            }
-            // color_id
-            if (!empty($_POST['color_id'])) {
-                $articles = $articleManager->searchByColor($_POST['color_id']);
-            }
-            // size_id
-            if (!empty($_POST['size_id'])) {
-                $articles = $articleManager->searchBySize($_POST['size_id']);
-            }
-            // brand_id + size_id + color_id 
-            if (!empty($_POST['brand_id']) && !empty($_POST['size_id']) && !empty($_POST['color_id'])) {
-                $articles = $articleManager->searchFull($_POST['color_id'], $_POST['size_id'], $_POST['brand_id']);
+        }
+        $wishlist = null;
+        $wishlistManager = new WishlistManager();
+        if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
+            $wishlist = $wishlistManager->getWishlistByUser($_SESSION['id']);
+        }
+        if($wishlist){
+            foreach ($articles as $article) {
+                foreach($wishlist as $wish){
+                    if($wish['article_id'] === $article['id']){
+                        $article['is_liked'] = 'true';    
+                    }
+                }
+                $result[] = $article; 
             }
         }
         return $this->twig->render('Home/index.html.twig', [
-            'articles' => $articles,
+            'articles' => $result,
             'brands' => $brands,
             'colors' => $colors,
             'sizes' => $sizes,
+            'wishlist' => $wishlist
         ]);
     }
 
@@ -74,7 +76,7 @@ class HomeController extends AbstractController
         $cartService = new CartService();
         $articleManager = new ArticleManager();
         $article = $articleManager->selectOneById($id);
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['add_article'])) {
                 $article = $_POST['add_article'];
                 $cartService->add($article);
@@ -85,9 +87,11 @@ class HomeController extends AbstractController
 
     public function cart()
     {
+        $wishlist = null;
         $cartService = new CartService();
-        $errorForm = null;
-        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        $wishlistManager = new WishlistManager();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['delete_id'])) {
                 $article = $_POST['delete_id'];
                 $cartService->delete($article);
@@ -96,19 +100,54 @@ class HomeController extends AbstractController
                 if (!empty($_POST['name']) && !empty($_POST['address'])) {
                     //$cartService->payment($_POST);
                 } else {
-                    $errorForm = "Tous les champs sont obligatoires !";
+                    $_SESSION['flash_message'] = ["Tous les champs sont obligatoires !"];
                 }
             }
         }
+
+        if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
+            $wishlist = $wishlistManager->getWishlistByUser($_SESSION['id']);
+        }
+
         return $this->twig->render('Home/cart.html.twig', [
             'cartInfos' => $cartService->cartInfos() ? $cartService->cartInfos() : null,
             'total' => $cartService->cartInfos() ? $cartService->totalCart() : null,
-            'errorForm' => $errorForm
+            'wishlist' => $wishlist
         ]);
     }
 
     public function success()
     {
         return $this->twig->render('Home/success.html.twig');
+    }
+
+    public function like(int $id)
+    {
+        $wishlistManager = new WishlistManager();
+        $isLiked = $wishlistManager->isLikedByUser($id, $_SESSION['id']);
+        if (!$isLiked) {
+            $wish = [
+                'user_id' => $_SESSION['id'],
+                'article_id' => $id
+            ];
+            $wishlistManager->insert($wish);
+            header('Location:/');
+        } else {
+            $_SESSION['flash_message'] = ['Article déjà dans votre wishlist'];
+            header('Location:/');
+        }
+    }
+
+    public function dislike(int $id)
+    {
+        $wishlistManager = new WishlistManager();
+        $wishlistManager->delete($id, $_SESSION['id']);
+        header('Location:/');
+    }
+
+    public function clear_flash()
+    {
+        unset($_SESSION['flash_message']);
+        return json_encode('true');
     }
 }

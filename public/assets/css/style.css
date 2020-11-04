@@ -1,0 +1,40 @@
+.bg-orange {
+    background-color: orange;
+}
+
+.bg-indigo {
+    background-color: indigo;
+}
+
+.bg-blue {
+    background-color: blue;
+}
+
+.bg-yellow {
+    background-color: yellow;
+}
+
+.bg-red {
+    background-color: red;
+}
+
+.bg-green {
+    background-color: green;
+}
+
+.bg-black {
+    background-color: black;
+}
+
+.bg-purple {
+    background-color: purple;
+}
+
+.bg-grey {
+    background-color: grey;
+}
+
+.bg-white {
+    background-color: white;
+    border: solid 1px black;
+}
