@@ -12,8 +12,7 @@ class AdminController extends AbstractController
 {
     public function index()
     {
-        if (isset($_SESSION['username'])) {
-            // if (isset($_SESSION['role'] && $_SESSION['role'] === "ADMIN"){}
+        if (isset($_SESSION['role']) && $_SESSION['role'] === "admin") {
             $commandManager = new CommandManager();
             $articleManager = new ArticleManager();
             $articles = $articleManager->selectAll();
@@ -28,7 +27,7 @@ class AdminController extends AbstractController
 
     public function editArticle($id = null)
     {
-        if (isset($_SESSION['username'])) {
+        if (isset($_SESSION['role']) && $_SESSION['role'] === "admin") {
             $brandManager = new BrandManager();
             $brands = $brandManager->selectAll();
             $sizeManager = new SizeManager();
@@ -36,9 +35,6 @@ class AdminController extends AbstractController
             $colorManager = new ColorManager();
             $colors = $colorManager->selectAll();
 
-            if (!isset($_SESSION['username'])) {
-                header('Location:/home/index');
-            }
             $articleManager = new ArticleManager();
             $errorForm = null;
             $article = null;
@@ -62,8 +58,8 @@ class AdminController extends AbstractController
                 'sizes' => $sizes,
                 'errorForm' => $errorForm
             ]);
-            header('Location: /');
         }
+        header('Location: /');
     }
 
     public function sendArticle($data, $id)

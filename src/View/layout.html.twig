@@ -32,13 +32,22 @@
                 <a href="/home/cart" class="nav-link btn"><i class="fas fa-shopping-cart text-white"></i></a>
                 {% endif %}
             </li>
-            {% if session.username %}
+            {% if session.role == 'admin' %}
             <li class="nav-item">
                 <a href="/admin/index" class="nav-link btn"><i class="fas fa-user-ninja text-white"></i></a>
             </li>
             <li class="nav-item">
-                <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-out-alt text-white"> {{session.username}}
+                <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-out-alt text-white">
+                        {{session.username}}
                     </i></a>
+            </li>
+            {% endif %}
+            {% if session.role == 'user' %}
+            <li class="nav-item">
+                <a href="#" class="nav-link btn"><i class="fas fa-user text-white"></i></a>
+            </li>
+            <li class="nav-item">
+                <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-in-alt text-white"></i></a>
             </li>
             {% else %}
             <li class="nav-item">

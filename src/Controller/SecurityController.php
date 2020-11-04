@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Model\RoleManager;
 use App\Model\UserManager;
 
 class SecurityController extends AbstractController
 {
     public function login()
     {
+        $roleManager = new RoleManager();
         $userManager = new UserManager();
         $error = null;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -17,7 +19,7 @@ class SecurityController extends AbstractController
                     if ($user->password === md5($_POST['password'])) {
                         $_SESSION['username'] = $user->email;
                         $_SESSION['id'] = $user->id;
-                        //$_SESSION['role'] = $user->role_id;
+                        $_SESSION['role'] = $roleManager->selectOneById($user->role_id)['name'];
                         header('Location:/admin/index');
                     } else {
                         $error = 'Password incorrect !';
@@ -37,6 +39,7 @@ class SecurityController extends AbstractController
     public function register()
     {
         $userManager = new UserManager();
+        $roleManager = new RoleManager();
         $error = null;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['email']) &&
@@ -54,12 +57,14 @@ class SecurityController extends AbstractController
                     $user = [
                         'email' => $_POST['email'],
                         'username' => $_POST['username'],
-                        'password' => md5($_POST['password'])
+                        'password' => md5($_POST['password']),
+                        'role_id' => $roleManager->getRoleUserId()
                     ];
                     $idUser = $userManager->insert($user);
                     if ($idUser) {
-                        $_SESSION['username'] = $user['email'];
-                        $_SESSION['id'] = $user['id'];
+                        $_SESSION['username'] = $user->email;
+                        $_SESSION['id'] = $user->id;
+                        $_SESSION['role_id'] = $user->role_id;
                         header('Location:/admin/index');
                     }
                 }

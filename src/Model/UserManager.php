@@ -41,10 +41,11 @@ class UserManager extends AbstractManager
     {
         // prepared request
         $statement = $this->pdo->prepare("INSERT INTO " . self::TABLE .
-        " (email, username, password) VALUES (:email, :username, :password)");
+        " (email, username, password, role_id) VALUES (:email, :username, :password, :role_id)");
         $statement->bindValue('email', $user['email'], \PDO::PARAM_STR);
         $statement->bindValue('username', $user['username'], \PDO::PARAM_STR);
         $statement->bindValue('password', $user['password'], \PDO::PARAM_STR);
+        $statement->bindValue('role_id', $user['role_id'], \PDO::PARAM_INT);
 
         if ($statement->execute()) {
             return (int)$this->pdo->lastInsertId();
@@ -73,12 +74,30 @@ class UserManager extends AbstractManager
 
         // prepared request
         $statement = $this->pdo->prepare("UPDATE " . self::TABLE .
-        " SET email=:email, username=:username, password=:password WHERE id=:id");
+        " SET email=:email, username=:username, password=:password, role_id=:role_id WHERE id=:id");
         $statement->bindValue('id', $user['id'], \PDO::PARAM_INT);
         $statement->bindValue('email', $user['email'], \PDO::PARAM_STR);
         $statement->bindValue('username', $user['username'], \PDO::PARAM_STR);
         $statement->bindValue('password', $user['password'], \PDO::PARAM_STR);
+        $statement->bindValue('role_id', $user['role_id'], \PDO::PARAM_INT);
 
         return $statement->execute();
+    }
+
+    public function getRole(int $id)
+    {
+        $statement = $this->pdo->prepare("SELECT
+        role.name as role_name 
+        FROM " . self::TABLE ." 
+        JOIN role ON role.id=user.role_id 
+        WHERE user.id=:id"
+        );
+        $statement->bindValue('id', $id, \PDO::PARAM_INT);
+        $statement->execute();
+        $role = $statement->fetch();
+        if ($role) {
+            return $role;
+        }
+        return false;
     }
 }
