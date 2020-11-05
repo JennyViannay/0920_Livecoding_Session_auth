@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
+use Stripe\Stripe;
 use App\Model\ArticleManager;
+use App\Model\CommandManager;
 
 class CartService 
 {
@@ -66,5 +68,55 @@ class CartService
             return $total;
         }
         return $total;
+    }
+
+    public function payment($infos)
+    {
+        $stripe = \Stripe\Stripe::setApiKey(API_KEY);
+
+        $commandManager = new CommandManager();
+        $data = [
+            'name' => $infos['name'],
+            'address' => $infos['address'],
+            'total' => $this->totalCart(),
+            'date' => date("Y-m-d")
+        ];
+        $commandManager->insert($data);
+
+        try {
+            $data = [
+                'source' => $_POST['stripeToken'],
+                'description' => $_POST['name'],
+                'email' => $_POST['email']
+            ];
+            $customer = \Stripe\Customer::create($data);
+            $charge = \Stripe\Charge::create([
+                'amount' => $this->totalCart() * 100,
+                'currency' => 'eur',
+                'description' => 'Example charge',
+                'customer' => $customer->id,
+                'statement_descriptor' => 'Custom descriptor',
+            ]);
+
+            unset($_SESSION['cart']);
+            unset($_SESSION['count']);
+            $_SESSION['transaction'] = $charge->receipt_url;
+
+            $sender = 'jenny.test4php@gmail.com';
+            $recipient = 'jenny.viannay75@gmail.com';
+
+            $subject = "Commande confirmée";
+            $message = "Félicitation, vous recevrez votre commande dans un délai de 48h !";
+            $headers = 'From:' . $sender;
+
+            $isSend = mail($recipient, $subject, $message, $headers);
+            if (!$isSend) {
+                var_dump("Error: Message not accepted"); die;
+            }
+
+            header('Location:/home/success');
+        } catch (\Stripe\Exception\ApiErrorException $e) {
+            $e->getError();
+        }
     }
 }

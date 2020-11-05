@@ -47,11 +47,20 @@ class HomeController extends AbstractController
                 $articles = $filterService->search($_POST);
             }
         }
+
         $wishlist = null;
         $wishlistManager = new WishlistManager();
+
         if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
             $wishlist = $wishlistManager->getWishlistByUser($_SESSION['id']);
         }
+
+        if(!isset($_SESSION['username']) && empty($_SESSION['username'])){
+            foreach ($articles as $article) {
+                $result[] = $article;
+            }
+        }
+
         if($wishlist){
             foreach ($articles as $article) {
                 foreach($wishlist as $wish){
@@ -61,7 +70,10 @@ class HomeController extends AbstractController
                 }
                 $result[] = $article; 
             }
+        } else {
+            $result = $articles;
         }
+
         return $this->twig->render('Home/index.html.twig', [
             'articles' => $result,
             'brands' => $brands,
@@ -98,7 +110,7 @@ class HomeController extends AbstractController
             }
             if (isset($_POST['payment'])) {
                 if (!empty($_POST['name']) && !empty($_POST['address'])) {
-                    //$cartService->payment($_POST);
+                    $cartService->payment($_POST);
                 } else {
                     $_SESSION['flash_message'] = ["Tous les champs sont obligatoires !"];
                 }

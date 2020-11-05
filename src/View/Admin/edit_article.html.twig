@@ -76,17 +76,22 @@
                         <i class="fas fa-plus-circle"></i></a>
                 </p>
                 {% set countImg = article.images|length %}
-                {% for i in range(0, countImg) %}
+                {% for i in 0..countImg -1 %}
                 <div class="form-group image-cls" id="images">
                     <label for="image_id_{{i + 1}}">Image {{i + 1}}</label>
-                    <input type="text" class="form-control animal-image" id="image_id_{{i + 1}}"
-                        value="{{ article.images[i].url }}" name="image{{i + 1}}">
-                    <input type="hidden" value="{{ article.images[i].id }}" name="image_id_{{i + 1}}">
+                    <input type="text" class="form-control animal-image" id="image_id[_{{i + 1}}]"
+                        value="{{ article.images[i].url }}" name="images[]">
+                    <input type="hidden" value="{{ article.images[i].id }}" name="image_id[]">
+                </div>
+                <div class="row">
+                    <div class="col-10">
+                        <img src="{{ article.images[i].url }}" alt="{{article.model}}" class="img-fluid mx-auto" style="width: 200px">
+                    </div>
+                    <div class="col-2">
+                        <a href="/admin/deleteImage/{{article.images[i].id}}/{{ article.id}}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                    </div>
                 </div>
                 {% endfor %}
-                <div class="text-center">
-                    <img src="" alt="" class="img-fluid" id="img-display">
-                </div>
                 <div class="small">* Champs obligatoires</div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Submit</button>
@@ -103,7 +108,7 @@
     var counter = document.getElementsByClassName('image-cls').length;
     addInputImage = () => {
         var newdiv = document.createElement('div');
-        newdiv.innerHTML = '<label for="image">Image ' + (counter + 1) + '</label><input type="text" class="form-control" id="image" value="" name="image' + counter + '">';
+        newdiv.innerHTML = '<label for="image">Image ' + (counter + 1) + '</label><input type="text" class="form-control" id="image" name="images[]">';
         divImages.appendChild(newdiv);
         counter++;
     }
