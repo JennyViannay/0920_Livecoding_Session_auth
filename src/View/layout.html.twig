@@ -19,33 +19,50 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">Projet 2 </a>
-        <ul class="nav">
-            <li class="nav-item">
-                {# {% if session.cart %} #}
-                <a href="/home/cart" class="nav-link btn">
-                    <i class="fas fa-shopping-cart text-white"></i>
-                    <span class="badge badge-danger">{{ session.count }}</span>
-                </a>
-                {# {% else %} #}
-                <a href="/home/cart" class="nav-link btn"><i class="fas fa-shopping-cart text-white"></i></a>
-                {# {% endif %} #}
-            </li>
-            {# {% if session.username %} #}
-            <li class="nav-item">
-                <a href="/admin/index" class="nav-link btn"><i class="fas fa-user-ninja text-white"></i></a>
-            </li>
-            <li class="nav-item">
-                <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-out-alt text-white"> {{session.username}}
-                    </i></a>
-            </li>
-            {# {% else %} #}
-            <li class="nav-item">
-                <a href="/security/login" class="nav-link btn"><i class="fas fa-sign-in-alt text-white"></i></a>
-            </li>
-            {# {% endif %} #}
-        </ul>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">E-Shop</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#"></a>
+                        <div class="dropdown-divider"></div>
+                    </div>
+                </li>
+                <li class="nav-item">
+
+                </li>
+            </ul>
+            {% if session.cart %}
+            <a href="/home/cart" class="nav-link btn">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="badge badge-danger">{{ session.count }}</span>
+            </a>
+            {% else %}
+            <a href="/home/cart" class="nav-link btn"><i class="fas fa-shopping-cart"></i></a>
+            {% endif %}
+            {% if session.role == 'admin' %}
+            <a href="/admin/index" class="nav-link btn"><i class="fas fa-user-ninja"></i></a>
+            <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-out-alt">
+                    {{session.username}}
+                </i></a>
+            {% endif %}
+            {% if session.role == 'user' %}
+            <a href="/user/index" class="nav-link btn"><i class="fas fa-user"></i></a>
+            <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-in-alt"></i></a>
+            {% else %}
+            <a href="/security/login" class="nav-link btn"><i class="fas fa-sign-in-alt"></i></a>
+            {% endif %}
+        </div>
     </nav>
     {% block content %}{% endblock %}
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -57,6 +74,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.0/axios.min.js"
+        integrity="sha512-DZqqY3PiOvTP9HkjIWgjO6ouCbq+dxqWoJZ/Q+zPYNHmlnI2dQnbJ5bxAHpAMw+LXRm4D72EIRXzvcHQtE8/VQ=="
+        crossorigin="anonymous"></script>
+    <script>
+        const clearBtn = document.getElementById('clear_flash');
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                axios.get('/home/clear_flash')
+                    .then(response => console.log(response))
+            })
+        }
+    </script>
     {% block javascript %}{% endblock %}
 </body>
 
