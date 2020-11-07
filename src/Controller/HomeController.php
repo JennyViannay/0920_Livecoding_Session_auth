@@ -127,7 +127,8 @@ class HomeController extends AbstractController
         return $this->twig->render('Home/cart.html.twig', [
             'cartInfos' => $cartService->cartInfos() ? $cartService->cartInfos() : null,
             'total' => $cartService->cartInfos() ? $cartService->totalCart() : null,
-            'wishlist' => $wishlist
+            'wishlist' => $wishlist,
+            'suggest' => $cartService->suggest()
         ]);
     }
 

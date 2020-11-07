@@ -129,4 +129,19 @@ class CartService
             $e->getError();
         }
     }
+
+    public function suggest():array
+    {
+        $articleManager = new ArticleManager();
+        $articles = $articleManager->selectAll();
+        foreach($articles as $key => $article){
+            foreach ($_SESSION['cart'] as $article_id => $qty) {
+                if ($article_id === intval($article['id'])) {
+                    unset($articles[$key]);
+                }   
+            }
+        }
+        $index = array_rand($articles, 1);
+        return $articles[$index];
+    }
 }
