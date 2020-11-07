@@ -3,38 +3,50 @@
 
 {% block content %}
 <div class="container mt-5">
-    {{dump(session)}}
-    {{dump(wishlist)}}
+    {# {{dump(wishlist)}} #}
     {% if session.cart %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Modele</th>
-                <th scope="col">Qty</th>
-                <th scope="col">Price</th>
-                <th scope="col">Total</th>
-                <th scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for article in cartInfos %}
-            <tr>
-                <th scope="row">#</th>
-                <td>{{article.model}}</td>
-                <td>{{article.qty}}</td>
-                <td>{{article.price}}</td>
-                <td>{{article.price * article.qty }} $</td>
-                <td>
-                    <form method="POST">
-                        <input type="text" class="d-none" name="delete_id" value="{{article.id}}">
-                        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></a>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <form method="POST">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Modele</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for article in cartInfos %}
+                <tr>
+                    <input type="text" class="d-none" name="id[]" value="{{article.id}}">
+                    <th scope="row">#</th>
+                    <td>{{article.model}}</td>
+                    <td>
+                        <select name="qty[]" id="qty">
+                            <option value="{{article.qty}}">{{article.qty}}</option>
+                            {% for i in 1..10 %}
+                            {% if i != article.qty %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>{{article.price}}</td>
+                    <td>{{article.price * article.qty }} $</td>
+                    <td>
+                        <a href="/home/cart/{{article.id}}" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="text-right">
+            <button type="submit" class="btn btn-warning" name="update_cart">Update Cart</button>
+        </div>
+    </form>
     <h1 class="display-4 mb-5">Total panier : {{total}} $</h1>
     <div class="jumbotron my-5">
         <h2 class="display-4">Paiement :</h2>

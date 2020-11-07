@@ -32,7 +32,7 @@
             </div>
             <div class="col-lg-8 col-md-8 col-xs-12">
                 <div class="title">
-                    <h5 class="card-title">{{article.model}} - {{article.color_name}}</h5>
+                    <h5 class="card-title">{{article.model}} - {{article.color_name}} - {{article.price}} $</h5>
                     <p>Size : {{article.size}}</p>
                     {% if article.qty <= 2 %}
                     <p>Latest available pairs {{article.qty}}</p>
@@ -54,11 +54,19 @@
                     Other size(s) :
                     {% for size in article.sizes %}
                     {% if size.size != article.size %}
-                    <a href="/home/showArticle/{{size.article_id}}" class="form-check-label small text-uppercase card-link-secondary">{{size.size}}</a>
+                    <a href="/home/showArticle/{{size.article_id}}"
+                        class="form-check-label small text-uppercase card-link-secondary">{{size.size}}</a>
                     {% endif %}
                     {% endfor %}
                 </div>
                 {% endif %}
+                <div class="col-12">
+                    <form method="POST">
+                        
+                        <input type="text" class="d-none" name="add_article" value="{{article.id}}">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-cart-arrow-down"></i></a>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

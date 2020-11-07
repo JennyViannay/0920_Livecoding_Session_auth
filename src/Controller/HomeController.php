@@ -97,17 +97,13 @@ class HomeController extends AbstractController
         return $this->twig->render('Home/show_article.html.twig', ['article' => $article]);
     }
 
-    public function cart()
+    public function cart(int $id = null)
     {
         $wishlist = null;
         $cartService = new CartService();
         $wishlistManager = new WishlistManager();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['delete_id'])) {
-                $article = $_POST['delete_id'];
-                $cartService->delete($article);
-            }
             if (isset($_POST['payment'])) {
                 if (!empty($_POST['name']) && !empty($_POST['address'])) {
                     $cartService->payment($_POST);
@@ -115,6 +111,13 @@ class HomeController extends AbstractController
                     $_SESSION['flash_message'] = ["Tous les champs sont obligatoires !"];
                 }
             }
+            if (isset($_POST['update_cart'])) {
+                $cartService->update($_POST);
+            }
+        }
+        if ($id != null){
+            $article = $id;
+            $cartService->delete($article);
         }
 
         if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {

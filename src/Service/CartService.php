@@ -19,6 +19,16 @@ class CartService
         header('Location:/');
     }
 
+    public function update(array $array)
+    {
+        for ($i = 0; $i < count($array['id']); $i++ ) {
+            foreach ($_SESSION['cart'] as $key => $value) {
+                $_SESSION['cart'][$array['id'][$i]] = $array['qty'][$i]; 
+            }
+        }
+        header('Location:/home/cart');
+    }
+
     public function delete($article)
     {
         $cart = $_SESSION['cart'];
