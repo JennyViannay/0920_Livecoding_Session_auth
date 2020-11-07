@@ -48,7 +48,6 @@
                     <th scope="col">Color</th>
                     <th scope="col">Price</th>
                     <th scope="col">Img</th>
-                    <th scope="col">Qty</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -58,18 +57,18 @@
                     <th scope="row">{{article.id}}</th>
                     <td>{{article.model}}</td>
                     <td>{{article.brand_name}}</td>
-                    <td>{{article.size}}</td>
-                    <td>{{article.color_name}}</td>
+                    <td>{{article.sizes|length}}</td>
+                    <td>{{article.colors|length}}</td>
                     <td>{{article.price}} $</td>
                     <td><img src="{{article.images[0].url}}" alt="" class="img-fluid" width="150px"></td>
                     <td>{{article.qty}}</td>
                     <td>
-                        <a href="/home/showArticle/{{ article.id }}" class="btn btn-sm btn-success my-2"><i
+                        <a href="/admin/showArticle/{{ article.id }}" class="btn btn-sm btn-success my-2"><i
                                 class="fas fa-eye"></i></a>
-                        <a href="/admin/editArticle/{{ article.id }}" class="btn btn-sm btn-warning my-2"><i
-                                class="fas fa-edit"></i></a>
-                        <a href="/admin/deleteArticle/{{ article.id }}"
-                            class="btn btn-sm btn-danger my-2"><i class="fas fa-trash"></i></a>
+                        {# <a href="/admin/editArticle/{{ article.id }}" class="btn btn-sm btn-warning my-2"><i
+                                class="fas fa-edit"></i></a> #}
+                        {# <a href="/admin/deleteArticle/{{ article.id }}"
+                            class="btn btn-sm btn-danger my-2"><i class="fas fa-trash"></i></a> #}
                     </td>
                 </tr>
                 {% endfor %}
