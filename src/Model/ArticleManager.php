@@ -32,10 +32,16 @@ class ArticleManager extends AbstractManager
             //var_dump('declinaisons :', $declinaisons); die;
             for ($i = 0; $i < count($declinaisons); $i++) {
                 if (!isset($article[0]['sizes'][$declinaisons[$i]['size_id']])) {
-                    $article[0]['sizes'][$declinaisons[$i]['size_id']] = $declinaisons[$i]['size'];
+                    $article[0]['sizes'][$declinaisons[$i]['size_id']] = [
+                        'size' => $declinaisons[$i]['size'],
+                        'article_id' => $declinaisons[$i]['id']
+                    ];
                 }
                 if (!isset($article['colors'][$declinaisons[$i]['color_id']])) {
-                    $article[0]['colors'][$declinaisons[$i]['color_id']] = $declinaisons[$i]['color_name'];
+                    $article[0]['colors'][$declinaisons[$i]['id']] = [
+                        'color' => $declinaisons[$i]['color_name'],
+                        'article_id' => $declinaisons[$i]['id']
+                    ];
                 }
                 if (!isset($article['quantity'][$declinaisons[$i]['color_name']])) {
                     $article[0]['quantity'][$declinaisons[$i]['color_name']] = $declinaisons[$i]['qty'];
@@ -69,10 +75,16 @@ class ArticleManager extends AbstractManager
         $declinaisons = $this->searchByModel($article['model']);
         for ($i = 0; $i < count($declinaisons); $i++) {
             if (!isset($article['sizes'][$declinaisons[$i]['size_id']])) {
-                $article['sizes'][$declinaisons[$i]['size_id']] = $declinaisons[$i]['size'];
+                $article['sizes'][$declinaisons[$i]['size_id']] = [
+                    'size' => $declinaisons[$i]['size'],
+                    'article_id' => $declinaisons[$i]['id']
+                ];
             }
             if (!isset($article['colors'][$declinaisons[$i]['color_id']])) {
-                $article['colors'][$declinaisons[$i]['color_id']] = $declinaisons[$i]['color_name'];
+                $article['colors'][$declinaisons[$i]['color_id']] = [
+                    'color' => $declinaisons[$i]['color_name'],
+                    'article_id' => $declinaisons[$i]['id']
+                ];
             }
             if (!isset($article['quantity'][$declinaisons[$i]['color_name']])) {
                 $article['quantity'][$declinaisons[$i]['color_name']] = $declinaisons[$i]['qty'];
