@@ -22,28 +22,30 @@ class ArticleManager extends AbstractManager
 
     public function selectAll(): array
     {
-        $articles = $this->pdo->query('SELECT 
-        art.id, art.brand_id, art.model, art.qty, art.model, art.price, art.size_id, art.color_id, 
-        brand.name as brand_name,
-        color.name as color_name,
-        size.size as size
-        FROM article as art
-        INNER JOIN brand ON art.brand_id=brand.id
-        INNER JOIN color ON art.color_id=color.id
-        INNER JOIN size ON art.size_id=size.id
-        ')->fetchAll();
-
-        $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
+        $models = $this->pdo->query('SELECT DISTINCT model FROM article')->fetchAll();
         $result = [];
-        foreach ($articles as $article) {
-            $statementImg = $this->pdo->prepare('SELECT id, url FROM image WHERE article_id=:article_id');
-            $statementImg->bindValue('article_id', $article['id'], \PDO::PARAM_INT);
-            $statementImg->execute();
-            $images = $statementImg->fetchAll();
-            $article['images'] = $images;
-            array_push($result, $article);
+        foreach ($models as $model) {
+            //var_dump('model :', $model);
+            $article = $this->selectOneByModel($model['model']);
+            //var_dump('article from select one by model :', $article);
+            $declinaisons = $this->searchByModel($article[0]['model']);
+            //var_dump('declinaisons :', $declinaisons); die;
+            for ($i = 0; $i < count($declinaisons); $i++) {
+                if (!isset($article[0]['sizes'][$declinaisons[$i]['size_id']])) {
+                    $article[0]['sizes'][$declinaisons[$i]['size_id']] = $declinaisons[$i]['size'];
+                }
+                if (!isset($article['colors'][$declinaisons[$i]['color_id']])) {
+                    $article[0]['colors'][$declinaisons[$i]['color_id']] = $declinaisons[$i]['color_name'];
+                }
+                if (!isset($article['quantity'][$declinaisons[$i]['color_name']])) {
+                    $article[0]['quantity'][$declinaisons[$i]['color_name']] = $declinaisons[$i]['qty'];
+                }
+            }
+            $result[] = $article[0];
         }
-        
+        // foreach ($result as $key => $value) {
+         //var_dump($result[0]);die;
+        // }
         return $result;
     }
 
@@ -63,6 +65,19 @@ class ArticleManager extends AbstractManager
         $statement->bindValue('id', $id, \PDO::PARAM_INT);
         $statement->execute();
         $article = $statement->fetch();
+
+        $declinaisons = $this->searchByModel($article['model']);
+        for ($i = 0; $i < count($declinaisons); $i++) {
+            if (!isset($article['sizes'][$declinaisons[$i]['size_id']])) {
+                $article['sizes'][$declinaisons[$i]['size_id']] = $declinaisons[$i]['size'];
+            }
+            if (!isset($article['colors'][$declinaisons[$i]['color_id']])) {
+                $article['colors'][$declinaisons[$i]['color_id']] = $declinaisons[$i]['color_name'];
+            }
+            if (!isset($article['quantity'][$declinaisons[$i]['color_name']])) {
+                $article['quantity'][$declinaisons[$i]['color_name']] = $declinaisons[$i]['qty'];
+            }
+        }
 
         $statementImg = $this->pdo->prepare('SELECT id, url FROM image WHERE article_id=:article_id');
         $statementImg->bindValue('article_id', $id, \PDO::PARAM_INT);
@@ -89,22 +104,19 @@ class ArticleManager extends AbstractManager
         $statement->bindValue('color_id', $article['color_id'], \PDO::PARAM_INT);
 
         if ($statement->execute()) {
-            return (int)$this->pdo->lastInsertId();
+            return (int) $this->pdo->lastInsertId();
         }
     }
 
     public function delete(int $id): void
     {
-        // prepared request
         $statement = $this->pdo->prepare("DELETE FROM " . self::TABLE . " WHERE id=:id");
         $statement->bindValue('id', $id, \PDO::PARAM_INT);
         $statement->execute();
     }
 
-    public function update(array $article):bool
+    public function update(array $article): bool
     {
-
-        // prepared request
         $statement = $this->pdo->prepare("UPDATE " . self::TABLE . " 
         SET brand_id=:brand_id, 
         qty=:qty, 
@@ -136,7 +148,7 @@ class ArticleManager extends AbstractManager
         JOIN color ON art.color_id=color.id
         JOIN size ON art.size_id=size.id
         WHERE model LIKE :search ORDER BY model ASC");
-        $statement->bindValue('search', $term.'%', \PDO::PARAM_STR);
+        $statement->bindValue('search', $term . '%', \PDO::PARAM_STR);
         $statement->execute();
         $articles = $statement->fetchAll();
 
@@ -150,7 +162,37 @@ class ArticleManager extends AbstractManager
             $article['images'] = $images;
             array_push($result, $article);
         }
-        
+
+        return $result;
+    }
+
+    public function selectOneByModel(string $term): array
+    {
+        $statement = $this->pdo->prepare("SELECT
+        art.id, art.brand_id, art.model, art.qty, art.model, art.price, art.size_id, art.color_id, 
+        brand.name as brand_name,
+        color.name as color_name,
+        size.size as size 
+        FROM article as art 
+        JOIN brand ON art.brand_id=brand.id
+        JOIN color ON art.color_id=color.id
+        JOIN size ON art.size_id=size.id
+        WHERE model LIKE :search ORDER BY model ASC");
+        $statement->bindValue('search', $term . '%', \PDO::PARAM_STR);
+        $statement->execute();
+        $articles = $statement->fetchAll();
+
+        $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
+        $result = [];
+        foreach ($articles as $article) {
+            $statementImg = $this->pdo->prepare('SELECT url FROM image WHERE article_id=:article_id');
+            $statementImg->bindValue('article_id', $article['id'], \PDO::PARAM_INT);
+            $statementImg->execute();
+            $images = $statementImg->fetchAll();
+            $article['images'] = $images;
+            array_push($result, $article);
+        }
+
         return $result;
     }
 
@@ -169,7 +211,7 @@ class ArticleManager extends AbstractManager
         $statement->bindValue('brand_id', $brand_id, \PDO::PARAM_INT);
         $statement->execute();
         $articles = $statement->fetchAll();
-        
+
         $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
         $result = [];
         foreach ($articles as $article) {
@@ -180,7 +222,7 @@ class ArticleManager extends AbstractManager
             $article['images'] = $images;
             array_push($result, $article);
         }
-        
+
         return $result;
     }
 
@@ -199,7 +241,7 @@ class ArticleManager extends AbstractManager
         $statement->bindValue('color_id', $color_id, \PDO::PARAM_INT);
         $statement->execute();
         $articles = $statement->fetchAll();
-        
+
         $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
         $result = [];
         foreach ($articles as $article) {
@@ -210,7 +252,7 @@ class ArticleManager extends AbstractManager
             $article['images'] = $images;
             array_push($result, $article);
         }
-        
+
         return $result;
     }
 
@@ -229,7 +271,7 @@ class ArticleManager extends AbstractManager
         $statement->bindValue('size_id', $size_id, \PDO::PARAM_INT);
         $statement->execute();
         $articles = $statement->fetchAll();
-        
+
         $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
         $result = [];
         foreach ($articles as $article) {
@@ -240,7 +282,7 @@ class ArticleManager extends AbstractManager
             $article['images'] = $images;
             array_push($result, $article);
         }
-        
+
         return $result;
     }
 
@@ -265,7 +307,7 @@ class ArticleManager extends AbstractManager
         $statement->bindValue('brand_id', $brand_id, \PDO::PARAM_INT);
         $statement->execute();
         $articles = $statement->fetchAll();
-        
+
         $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
         $result = [];
         foreach ($articles as $article) {
@@ -276,9 +318,7 @@ class ArticleManager extends AbstractManager
             $article['images'] = $images;
             array_push($result, $article);
         }
-        
+
         return $result;
     }
-
-
 }
