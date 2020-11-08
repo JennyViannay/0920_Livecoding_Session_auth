@@ -232,6 +232,20 @@ footer a:hover {
     border-color: var(--yellow);
 }
 
+.btn-red {
+    display: inline-block;
+    color: var(--white);
+    background-color: var(--red);
+    border-color: var(--red);
+}
+
+.btn-red:hover {
+    display: inline-block;
+    color: #fff;
+    background-color: var(--green);
+    border-color: var(--green);
+}
+
 /* BANNER PROMO */
 
 .marquee-rtl> :first-child {

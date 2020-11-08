@@ -16,7 +16,7 @@ class CartService
             $_SESSION['cart'][$article] = 1;
         }
         $_SESSION['count'] = $this->countArticle();
-        header('Location:/');
+        header('Location:/home/articles');
     }
 
     public function update(array $array)
@@ -134,14 +134,12 @@ class CartService
     {
         $articleManager = new ArticleManager();
         $articles = $articleManager->selectAll();
-        foreach($articles as $key => $article){
-            foreach ($_SESSION['cart'] as $article_id => $qty) {
-                if ($article_id === intval($article['id'])) {
-                    unset($articles[$key]);
-                }   
-            }
-        }
-        $index = array_rand($articles, 1);
-        return $articles[$index];
+
+        $suggest = [];
+        array_push($suggest, $articles[array_rand($articles, 1)]);
+        array_push($suggest, $articles[array_rand($articles, 1)]);
+        array_push($suggest, $articles[array_rand($articles, 1)]);
+        array_push($suggest, $articles[array_rand($articles, 1)]);
+        return $suggest;
     }
 }

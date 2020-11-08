@@ -21,13 +21,14 @@ class UserController extends AbstractController
 
         foreach ($wishlist as $wish) {
             $article = $articleManager->selectOneById($wish['article_id']);
+            $article['wishlist_id'] = $wish['id'];
+            $article['is_liked'] = 'true'; 
             $articlesDetails[] = $article;
         }
 
         return $this->twig->render('User/index.html.twig', [
             'user' => $user,
-            'wishlist' => $wishlist,
-            'articles' => $articlesDetails
+            'wishlist' => $articlesDetails
         ]);
     }
 }

@@ -14,7 +14,6 @@ class HomeController extends AbstractController
 {
     public function index()
     {
-        $result = [];
         $cartService = new CartService();
         $articleManager = new ArticleManager();
         $filterService = new FilterService();
@@ -36,7 +35,7 @@ class HomeController extends AbstractController
         ]);
     }
     
-    public function articles()
+    public function articles(array $article = null)
     {
         $result = [];
         $cartService = new CartService();
@@ -60,7 +59,7 @@ class HomeController extends AbstractController
                 $cartService->add($article);
             }
             if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
-                $articles = $filterService->search($_POST);
+                $articles = $filterService->getArticlesFromSearch($_POST);
             }
         }
 
@@ -117,8 +116,11 @@ class HomeController extends AbstractController
     {
         $wishlist = null;
         $suggest = null;
+        $articlesDetails = [];
         $cartService = new CartService();
+        $filterService = new FilterService();
         $wishlistManager = new WishlistManager();
+        $articleManager = new ArticleManager();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['payment'])) {
@@ -130,6 +132,13 @@ class HomeController extends AbstractController
             }
             if (isset($_POST['update_cart'])) {
                 $cartService->update($_POST);
+            }
+            if (isset($_POST['add_article'])) {
+                $article = $_POST['add_article'];
+                $cartService->add($article);
+            }
+            if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
+                $filterService->searchBar($_POST);
             }
         }
         if ($id != null){
@@ -144,10 +153,18 @@ class HomeController extends AbstractController
         if (isset($_SESSION['cart'])){
             $suggest = $cartService->suggest();
         }
+
+        foreach ($wishlist as $wish) {
+            $article = $articleManager->selectOneById($wish['article_id']);
+            $article['wishlist_id'] = $wish['id'];
+            $article['is_liked'] = 'true'; 
+            $articlesDetails[] = $article;
+        }
+
         return $this->twig->render('Home/cart.html.twig', [
             'cartInfos' => $cartService->cartInfos() ? $cartService->cartInfos() : null,
             'total' => $cartService->cartInfos() ? $cartService->totalCart() : null,
-            'wishlist' => $wishlist,
+            'wishlist' => $articlesDetails,
             'suggest' =>  $suggest
         ]);
     }
