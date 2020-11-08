@@ -254,7 +254,6 @@ class ArticleManager extends AbstractManager
         $statement->execute();
         $articles = $statement->fetchAll();
 
-        $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
         $result = [];
         foreach ($articles as $article) {
             $statementImg = $this->pdo->prepare('SELECT url FROM image WHERE article_id=:article_id');
@@ -318,6 +317,35 @@ class ArticleManager extends AbstractManager
         $statement->bindValue('color_id', $color_id, \PDO::PARAM_INT);
         $statement->bindValue('brand_id', $brand_id, \PDO::PARAM_INT);
         $statement->execute();
+        $articles = $statement->fetchAll();
+
+        $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
+        $result = [];
+        foreach ($articles as $article) {
+            $statementImg = $this->pdo->prepare('SELECT url FROM image WHERE article_id=:article_id');
+            $statementImg->bindValue('article_id', $article['id'], \PDO::PARAM_INT);
+            $statementImg->execute();
+            $images = $statementImg->fetchAll();
+            $article['images'] = $images;
+            array_push($result, $article);
+        }
+
+        return $result;
+    }
+
+    public function selectNineLast(): array
+    {
+        $statement = $this->pdo->query("SELECT
+        art.id, art.brand_id, art.model, art.qty, art.model, art.price, art.size_id, art.color_id, 
+        brand.name as brand_name,
+        color.name as color_name,
+        size.size as size 
+        FROM article as art 
+        JOIN brand ON art.brand_id=brand.id
+        JOIN color ON art.color_id=color.id
+        JOIN size ON art.size_id=size.id
+        ORDER BY art.id DESC LIMIT 9");
+
         $articles = $statement->fetchAll();
 
         $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();

@@ -12,15 +12,31 @@ use App\Model\WishlistManager;
 
 class HomeController extends AbstractController
 {
-    /**
-     * Display home page
-     *
-     * @return string
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
     public function index()
+    {
+        $result = [];
+        $cartService = new CartService();
+        $articleManager = new ArticleManager();
+        $filterService = new FilterService();
+
+        $articles = $articleManager->selectNineLast();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!empty($_POST['add_article'])) {
+                $article = $_POST['add_article'];
+                $cartService->add($article);
+            }
+            if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
+                $articles = $filterService->search($_POST);
+            }
+        }
+
+        return $this->twig->render('Home/index.html.twig', [
+            'articles' => $articles
+        ]);
+    }
+    
+    public function articles()
     {
         $result = [];
         $cartService = new CartService();
@@ -74,7 +90,7 @@ class HomeController extends AbstractController
             $result = $articles;
         }
 
-        return $this->twig->render('Home/index.html.twig', [
+        return $this->twig->render('Home/articles.html.twig', [
             'articles' => $result,
             'brands' => $brands,
             'colors' => $colors,
