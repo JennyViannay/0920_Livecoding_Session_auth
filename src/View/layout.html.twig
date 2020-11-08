@@ -19,50 +19,78 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">E-Shop</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+    <div class="container">
+        <nav class="nav justify-content-end text-xs nav1">
+            <a class="nav-link" href="#">Marketplace</a>
+            <a class="nav-link" href="#">Help & FAQ</a>
+            <a class="nav-link" href="#">EN</a>
+        </nav>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-center d-none d-sm-block">
+        <div class="container">
+            <a class="navbar-brand" href="/">E-Shop</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#"></a>
-                        <div class="dropdown-divider"></div>
-                    </div>
-                </li>
-                <li class="nav-item">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#"></a>
+                            <div class="dropdown-divider"></div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
 
-                </li>
-            </ul>
-            {% if session.cart %}
-            <a href="/home/cart" class="nav-link btn">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="badge badge-danger">{{ session.count }}</span>
-            </a>
-            {% else %}
-            <a href="/home/cart" class="nav-link btn"><i class="fas fa-shopping-cart"></i></a>
-            {% endif %}
-            {% if session.role == 'admin' %}
-            <a href="/admin/index" class="nav-link btn"><i class="fas fa-user-ninja"></i></a>
-            <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-out-alt">
-                    {{session.username}}
-                </i></a>
-            {% endif %}
-            {% if session.role == 'user' %}
-            <a href="/user/index" class="nav-link btn"><i class="fas fa-user"></i></a>
-            <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-in-alt"></i></a>
-            {% else %}
-            <a href="/security/login" class="nav-link btn"><i class="fas fa-sign-in-alt"></i></a>
-            {% endif %}
+                    </li>
+                </ul>
+                {% if session.cart %}
+                <a href="/home/cart" class="nav-link btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge badge-danger">{{ session.count }}</span>
+                </a>
+                {% else %}
+                <a href="/home/cart" class="nav-link btn"><i class="fas fa-shopping-cart"></i></a>
+                {% endif %}
+                {% if session.role == 'admin' %}
+                <a href="/user/index" class="nav-link btn"><i class="fas fa-user"></i></a>
+                <a href="/admin/index" class="nav-link btn"><i class="fas fa-user-ninja"></i></a>
+                <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-out-alt"></i></a>
+                {% endif %}
+                {% if session.role == 'user' %}
+                <a href="/user/index" class="nav-link btn"><i class="fas fa-user"></i></a>
+                <a href="/security/logout" class="nav-link btn"><i class="fas fa-sign-in-alt"></i></a>
+                {% endif %}
+            </div>
         </div>
+    </nav>
+    <nav class="nav fixed-bottom justify-content-center d-sm-none bg-black">
+        <a href="/" class="nav-link mx-3">
+            <i class="fas fa-home text-white"></i>
+        </a>
+        {% if session.cart %}
+        <a href="/home/cart" class="nav-link mx-3">
+            <i class="fas fa-shopping-cart text-white"></i>
+            <span class="badge badge-danger">{{ session.count }}</span>
+        </a>
+        {% else %}
+        <a href="/home/cart" class="nav-link mx-3"><i class="fas fa-shopping-cart text-white"></i></a>
+        {% endif %}
+        {% if session.role == 'admin' %}
+        <a href="/user/index" class="nav-link mx-3"><i class="fas fa-user text-white"></i></a>
+        <a href="/admin/index" class="nav-link mx-3"><i class="fas fa-user-ninja text-white"></i></a>
+        <a href="/security/logout" class="nav-link mx-3"><i class="fas fa-sign-out-alt text-white"></i></a>
+        {% endif %}
+        {% if session.role == 'user' %}
+        <a href="/user/index" class="nav-link mx-3"><i class="fas fa-user text-white"></i></a>
+        <a href="/security/logout" class="nav-link mx-3"><i class="fas fa-sign-in-alt text-white"></i></a>
+        {% endif %}
     </nav>
     {% block content %}{% endblock %}
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"

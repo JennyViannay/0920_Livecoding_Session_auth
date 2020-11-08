@@ -100,6 +100,7 @@ class HomeController extends AbstractController
     public function cart(int $id = null)
     {
         $wishlist = null;
+        $suggest = null;
         $cartService = new CartService();
         $wishlistManager = new WishlistManager();
 
@@ -124,11 +125,14 @@ class HomeController extends AbstractController
             $wishlist = $wishlistManager->getWishlistByUser($_SESSION['id']);
         }
 
+        if (isset($_SESSION['cart'])){
+            $suggest = $cartService->suggest();
+        }
         return $this->twig->render('Home/cart.html.twig', [
             'cartInfos' => $cartService->cartInfos() ? $cartService->cartInfos() : null,
             'total' => $cartService->cartInfos() ? $cartService->totalCart() : null,
             'wishlist' => $wishlist,
-            'suggest' => $cartService->suggest()
+            'suggest' =>  $suggest
         ]);
     }
 
