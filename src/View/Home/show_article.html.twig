@@ -2,7 +2,7 @@
 {% block title %}{{article.model}}{% endblock %}
 {% block content %}
 <div class="container">
-    <div class="border mt-5 p-5">
+    <div class="border mt-5 p-5 box-shadow">
         <div class="row">
             <div class="col-lg-6 col-md-6 col-xs-12">
                 {% if article.images|length > 1 %}
@@ -37,12 +37,10 @@
                     <p>Size : {{article.size}}</p>
                     <div>
                         Size Available :
-                        {% for key, color in article.colors %}
-                        {% if key == article.color_name %}
-                        {% for col in color %}
-                        {% if col.article_id != article.id %}
-                        <a href="/home/showArticle/{{col.article_id}}" class="simple-text text-red">{{col.size}}</a>
-                        {% endif %}
+                        {% for key, declinaison in article.sizes_colors %}
+                        {% if article.color_name == key %}
+                        {% for size in declinaison.sizes %}
+                        <a href="/home/showArticle/{{size.article_id}}" class="simple-text text-red">{{size.size}}</a>
                         {% endfor %}
                         {% endif %}
                         {% endfor %}
@@ -54,13 +52,13 @@
                     <p class="text-red">Unavailable for now !</p>
                     {% endif %}
                 </div>
-                {% if article.colors|length > 1 %}
+                {% if article.sizes_colors|length > 1 %}
                 <div>
                     Colors :
-                    {% for key in article.colors|keys %}
-                    {% if key != article.color_name %}
-                    <a href="/home/showArticle/{{key.article_id}}"
-                        class="btn rounded-circle bg-{{key|lower}} p-3 m-2 text-white"></a>
+                    {% for color in article.sizes_colors %}
+                    {% if article.color_name != color.color_name %}
+                        <a href="/home/showArticle/{{color.sizes[0].article_id}}"
+                            class="btn rounded-circle bg-{{color.color_name|lower}} p-3 m-2 text-white"></a>
                     {% endif %}
                     {% endfor %}
                 </div>
