@@ -16,7 +16,17 @@ class CartService
             $_SESSION['cart'][$article] = 1;
         }
         $_SESSION['count'] = $this->countArticle();
-        header('Location:/');
+        header('Location:/home/articles');
+    }
+
+    public function update(array $array)
+    {
+        for ($i = 0; $i < count($array['id']); $i++ ) {
+            foreach ($_SESSION['cart'] as $key => $value) {
+                $_SESSION['cart'][$array['id'][$i]] = $array['qty'][$i]; 
+            }
+        }
+        header('Location:/home/cart');
     }
 
     public function delete($article)
@@ -118,5 +128,18 @@ class CartService
         } catch (\Stripe\Exception\ApiErrorException $e) {
             $e->getError();
         }
+    }
+
+    public function suggest():array
+    {
+        $articleManager = new ArticleManager();
+        $articles = $articleManager->selectAll();
+
+        $suggest = [];
+        array_push($suggest, $articles[array_rand($articles, 1)]);
+        array_push($suggest, $articles[array_rand($articles, 1)]);
+        array_push($suggest, $articles[array_rand($articles, 1)]);
+        array_push($suggest, $articles[array_rand($articles, 1)]);
+        return $suggest;
     }
 }

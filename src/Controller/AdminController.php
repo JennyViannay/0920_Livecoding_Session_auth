@@ -43,8 +43,7 @@ class AdminController extends AbstractController
                 $article = $articleManager->selectOneById($id);
             }
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                if (
-                    !empty($_POST['model']) && !empty($_POST['price']) && !empty($_POST['brand_id'])
+                if (!empty($_POST['model']) && !empty($_POST['price']) && !empty($_POST['brand_id'])
                     && !empty($_POST['size_id']) && !empty($_POST['color_id']) && !empty($_POST['qty'])
                 ) {
                     $this->manageArticle($_POST, $id);
@@ -88,6 +87,16 @@ class AdminController extends AbstractController
             $this->manageImages($images, $id);
             header('Location:/admin/index');
         }
+    }
+
+    public function showArticle($id)
+    {
+        if (isset($_SESSION['role']) && $_SESSION['role'] === "admin") {
+            $articleManager = new ArticleManager();
+            $article = $articleManager->selectOneById($id);
+            return $this->twig->render('Admin/show_article.html.twig', ['article' => $article]);
+        }
+        header('Location:/');
     }
 
     public function deleteArticle($id)
