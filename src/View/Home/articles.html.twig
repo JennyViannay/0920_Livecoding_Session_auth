@@ -1,0 +1,145 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="row p-lg-5">
+        <div class="col-lg-2 col-md-2 col-xs-12">
+            <a class="my-3" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+                aria-controls="collapseExample" onclick="toggleFilter()">
+                Filters <i class="fas fa-toggle-off" id="fa-toggle"></i>
+            </a>
+            <br>
+            <a href="/home/articles">All articles</a>
+            <div class="collapse bg-light p-3 box-shadow" id="collapseExample">
+                <form method="POST" class="mt-3">
+                    <!-- Section: Condition -->
+                    <section class="mb-4">
+                        <h6 class="font-weight-bold mb-3">Brand</h6>
+                        {% for brand in brands %}
+                        <div class="form-check pl-4 mb-3">
+                            <input type="checkbox" class="form-check-input filled-in" id="brand_id" name="brand_id"
+                                value="{{brand.id}}">
+                            <label class="form-check-label small text-uppercase card-link-secondary"
+                                for="brand_id">{{brand.name}}</label>
+                        </div>
+                        {% endfor %}
+                    </section>
+                    <section class="mb-4">
+                        <h6 class="font-weight-bold mb-3">Size</h6>
+                        {% for size in sizes %}
+                        <div class="form-check pl-4 mb-3">
+                            <input type="checkbox" class="form-check-input filled-in" value={{size.id}} id="size"
+                                name="size_id">
+                            <label class="form-check-label small text-uppercase card-link-secondary"
+                                for="size">{{size.size}}</label>
+                        </div>
+                        {% endfor %}
+                    </section>
+                    <!-- Section: Size -->
+                    <!-- Section: Color -->
+                    <section class="mb-4">
+                        <h6 class="font-weight-bold mb-3">Color</h6>
+                        <div class="btn-group btn-group-toggle btn-color-group d-block mt-n2 ml-n2"
+                            data-toggle="buttons">
+                            {% for color in colors %}
+                            <label class="btn rounded-circle bg-{{color.name|lower}} p-3 m-2">
+                                <input type="checkbox" autocomplete="off" value="{{color.id}}" name="color_id">
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </section>
+                    <!-- Section: Color -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-green btn-lg btn-block">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-10 col-md-10 col-xs-12">
+            {% if session.flash_message is not empty %}
+            {% for message in session.flash_message %}
+            <div class="col-12">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>{{message}}</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="clear_flash">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <div class="row">
+                {% for article in articles %}
+                <div class="col-lg-3 col-md-4 col-xs-10 my-3 d-flex align-items-stretch">
+                    <div class="card">
+                        <div class="mx-auto">
+                            {% if article.images|length > 1 %}
+                            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <img src="{{article.images[0].url}}" class="d-block w-100" alt="">
+                                    </div>
+                                    {% for i in 1..article.images|length - 1 %}
+                                    <div class="carousel-item">
+                                        <img src="{{article.images[i].url}}" class="d-block w-100" alt="">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                <a class="carousel-control-prev" href="#carouselExampleControls" role="button"
+                                    data-slide="prev">
+                                    <span class="carousel-control-prev-icon text-dark" aria-hidden="true"></span>
+                                    <span class="sr-only text-dark">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" href="#carouselExampleControls" role="button"
+                                    data-slide="next">
+                                    <span class="carousel-control-next-icon text-dark" aria-hidden="true"></span>
+                                    <span class="sr-only text-dark">Next</span>
+                                </a>
+                            </div>
+                            {% else %}
+                            <img src="{{article.images[0].url}}" class="d-block w-100" alt="">
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-white">
+                            <div class="row">
+                                <div class="col-10">
+                                    <a href="/home/showArticle/{{article.id}}">
+                                        <h5 class="card-title">{{article.model}} - {{article.brand_name}} - <small>{{article.price}} $</small></h5>
+                                    </a>
+                                </div>
+                                <div class="col-2">
+                                    <div class="text-right">
+                                        {% if session.username is not empty %}
+                                        {% if article.is_liked == true %}
+                                        <a href="/home/dislike/{{ article.id }}"><i class="fas fa-heart"></i></a>
+                                        {% else %}
+                                        <a href="/home/like/{{ article.id }}"><i class="far fa-heart"></i></a>
+                                        {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <p>size : {{article.size}}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    toggleFilter = () => {
+        var x = document.getElementById("fa-toggle");
+        console.log(x.classList.value)
+        if (x.classList.value === 'fas fa-toggle-on') {
+            x.classList.value = 'fas fa-toggle-off'
+        } else {
+            x.classList.value = 'fas fa-toggle-on'
+        }
+    }
+</script>
+{% endblock %}

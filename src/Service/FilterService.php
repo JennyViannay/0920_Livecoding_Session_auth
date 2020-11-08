@@ -6,22 +6,28 @@ use App\Model\ArticleManager;
 
 class FilterService
 {
-    public function search($search){
+    public function getArticlesFromSearch(array $search){
         $articleManager = new ArticleManager();
-        if (!empty($_POST['search'])) {
-            return $articleManager->searchByModel($_POST['search']);
+        if (!empty($search['search'])) {
+            return $articleManager->searchByModel($search['search']);
         }
-        if (!empty($_POST['brand_id'])) {
-            return $articleManager->searchByBrand($_POST['brand_id']);
+        if (!empty($search['brand_id'])) {
+            return $articleManager->searchByBrand($search['brand_id']);
         }
-        if (!empty($_POST['color_id'])) {
-            return $articleManager->searchByColor($_POST['color_id']);
+        if (!empty($search['color_id'])) {
+            return $articleManager->searchByColor($search['color_id']);
         }
-        if (!empty($_POST['size_id'])) {
-            return $articleManager->searchBySize($_POST['size_id']);
+        if (!empty($search['size_id'])) {
+            return $articleManager->searchBySize($search['size_id']);
         }
-        if (!empty($_POST['brand_id']) && !empty($_POST['size_id']) && !empty($_POST['color_id'])) {
-            return $articleManager->searchFull($_POST['color_id'], $_POST['size_id'], $_POST['brand_id']);
+        if (!empty($search['brand_id']) && !empty($search['size_id']) && !empty($search['color_id'])) {
+            return $articleManager->searchFull($search['color_id'], $search['size_id'], $search['brand_id']);
         }
     }
+
+    // public function searchBar(array $search){
+    //     $articleManager = new ArticleManager();
+    //     $articles = $articleManager->searchByModel($search['search']);
+    //     header('Location:/home/articles/'.$articles);
+    // }
 }

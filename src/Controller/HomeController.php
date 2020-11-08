@@ -12,15 +12,30 @@ use App\Model\WishlistManager;
 
 class HomeController extends AbstractController
 {
-    /**
-     * Display home page
-     *
-     * @return string
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     */
     public function index()
+    {
+        $cartService = new CartService();
+        $articleManager = new ArticleManager();
+        $filterService = new FilterService();
+
+        $articles = $articleManager->selectNineLast();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!empty($_POST['add_article'])) {
+                $article = $_POST['add_article'];
+                $cartService->add($article);
+            }
+            if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
+                $articles = $filterService->search($_POST);
+            }
+        }
+
+        return $this->twig->render('Home/index.html.twig', [
+            'articles' => $articles
+        ]);
+    }
+    
+    public function articles(array $article = null)
     {
         $result = [];
         $cartService = new CartService();
@@ -44,7 +59,7 @@ class HomeController extends AbstractController
                 $cartService->add($article);
             }
             if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
-                $articles = $filterService->search($_POST);
+                $articles = $filterService->getArticlesFromSearch($_POST);
             }
         }
 
@@ -74,7 +89,7 @@ class HomeController extends AbstractController
             $result = $articles;
         }
 
-        return $this->twig->render('Home/index.html.twig', [
+        return $this->twig->render('Home/articles.html.twig', [
             'articles' => $result,
             'brands' => $brands,
             'colors' => $colors,
@@ -97,11 +112,15 @@ class HomeController extends AbstractController
         return $this->twig->render('Home/show_article.html.twig', ['article' => $article]);
     }
 
-    public function cart()
+    public function cart(int $id = null)
     {
         $wishlist = null;
+        $suggest = null;
+        $articlesDetails = [];
         $cartService = new CartService();
+        $filterService = new FilterService();
         $wishlistManager = new WishlistManager();
+        $articleManager = new ArticleManager();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['delete_id'])) {
@@ -115,16 +134,42 @@ class HomeController extends AbstractController
                     $_SESSION['flash_message'] = ["Tous les champs sont obligatoires !"];
                 }
             }
+            if (isset($_POST['update_cart'])) {
+                $cartService->update($_POST);
+            }
+            if (isset($_POST['add_article'])) {
+                $article = $_POST['add_article'];
+                $cartService->add($article);
+            }
+            if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
+                $filterService->getArticlesFromSearch($_POST);
+            }
+        }
+        if ($id != null){
+            $article = $id;
+            $cartService->delete($article);
         }
 
         if (isset($_SESSION['id']) && !empty($_SESSION['id'])) {
             $wishlist = $wishlistManager->getWishlistByUser($_SESSION['id']);
         }
 
+        if (isset($_SESSION['cart'])){
+            $suggest = $cartService->suggest();
+        }
+
+        foreach ($wishlist as $wish) {
+            $article = $articleManager->selectOneById($wish['article_id']);
+            $article['wishlist_id'] = $wish['id'];
+            $article['is_liked'] = 'true'; 
+            $articlesDetails[] = $article;
+        }
+
         return $this->twig->render('Home/cart.html.twig', [
             'cartInfos' => $cartService->cartInfos() ? $cartService->cartInfos() : null,
             'total' => $cartService->cartInfos() ? $cartService->totalCart() : null,
-            'wishlist' => $wishlist
+            'wishlist' => $articlesDetails,
+            'suggest' =>  $suggest
         ]);
     }
 
