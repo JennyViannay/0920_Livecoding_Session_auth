@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\CartService;
 use App\Model\ArticleManager;
 use App\Model\UserManager;
 use App\Model\WishlistManager;
@@ -10,6 +11,7 @@ class UserController extends AbstractController
 {
     public function index()
     {
+        $cartService = new CartService();
         $userManager = new UserManager();
         $user = $userManager->selectOneById($_SESSION['id']);
 
@@ -24,6 +26,12 @@ class UserController extends AbstractController
             $article['wishlist_id'] = $wish['id'];
             $article['is_liked'] = 'true'; 
             $articlesDetails[] = $article;
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['add_article'])) {
+                $article = $_POST['add_article'];
+                $cartService->add($article);
+            }
         }
 
         return $this->twig->render('User/index.html.twig', [

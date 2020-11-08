@@ -123,6 +123,10 @@ class HomeController extends AbstractController
         $articleManager = new ArticleManager();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['delete_id'])) {
+                $article = $_POST['delete_id'];
+                $cartService->delete($article);
+            }
             if (isset($_POST['payment'])) {
                 if (!empty($_POST['name']) && !empty($_POST['address'])) {
                     $cartService->payment($_POST);
@@ -138,7 +142,7 @@ class HomeController extends AbstractController
                 $cartService->add($article);
             }
             if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
-                $filterService->searchBar($_POST);
+                $filterService->getArticlesFromSearch($_POST);
             }
         }
         if ($id != null){
