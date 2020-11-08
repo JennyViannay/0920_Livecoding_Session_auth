@@ -10,10 +10,10 @@
                         <div class="carousel-item active">
                             <div class="row">
                                 {% for i in 0..2 %}
-                                <div class="col-md-4 mb-3 d-flex align-items-stretch">
+                                <div class="col-md-4 mb-3">
                                     <a href="/home/showArticle/{{articles[i].id}}">
                                         <div class="card">
-                                            <img class="img-fluid" alt="100%x280" src="{{articles[i].images[0].url}}">
+                                            <img class="card-img-top" alt="100%x280" src="{{articles[i].images[0].url}}">
                                             <div class="card-body">
                                                 <h4 class="card-title big-title text-black">{{articles[i].model}} |
                                                     {{articles[i].price}} $</h4>
@@ -27,10 +27,10 @@
                         <div class="carousel-item">
                             <div class="row">
                                 {% for i in 3..5 %}
-                                <div class="col-md-4 mb-3 d-flex align-items-stretch">
+                                <div class="col-md-4 mb-3">
                                     <a href="/home/showArticle/{{articles[i].id}}">
                                         <div class="card">
-                                            <img class="img-fluid" alt="100%x280" src="{{articles[i].images[0].url}}">
+                                            <img class="card-img-top" alt="100%x280" src="{{articles[i].images[0].url}}">
                                             <div class="card-body">
                                                 <h4 class="card-title big-title text-black">{{articles[i].model}} |
                                                     {{articles[i].price}} $</h4>
@@ -44,10 +44,10 @@
                         <div class="carousel-item">
                             <div class="row">
                                 {% for i in 6..8 %}
-                                <div class="col-md-4 mb-3 d-flex align-items-stretch">
+                                <div class="col-md-4 mb-3">
                                     <a href="/home/showArticle/{{articles[i].id}}">
                                         <div class="card">
-                                            <img class="img-fluid" alt="100%x280" src="{{articles[i].images[0].url}}">
+                                            <img class="card-img-top" alt="100%x280" src="{{articles[i].images[0].url}}">
                                             <div class="card-body">
                                                 <h4 class="card-title big-title text-black">{{articles[i].model}} |
                                                     {{articles[i].price}} $</h4>

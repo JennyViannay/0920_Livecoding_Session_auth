@@ -22,36 +22,26 @@ class ArticleManager extends AbstractManager
 
     public function selectAll(): array
     {
-        $models = $this->pdo->query('SELECT DISTINCT model FROM article')->fetchAll();
+        $articles = $this->pdo->query("SELECT
+        art.id, art.brand_id, art.model, art.qty, art.model, art.price, art.size_id, art.color_id, 
+        brand.name as brand_name,
+        color.name as color_name,
+        size.size as size 
+        FROM article as art 
+        JOIN brand ON art.brand_id=brand.id
+        JOIN color ON art.color_id=color.id
+        JOIN size ON art.size_id=size.id")->fetchAll();
+
         $result = [];
-        foreach ($models as $model) {
-            //var_dump('model :', $model);
-            $article = $this->selectOneByModel($model['model']);
-            //var_dump('article from select one by model :', $article);
-            $declinaisons = $this->searchByModel($article[0]['model']);
-            //var_dump('declinaisons :', $declinaisons); die;
-            for ($i = 0; $i < count($declinaisons); $i++) {
-                if (!isset($article[0]['sizes'][$declinaisons[$i]['size_id']])) {
-                    $article[0]['sizes'][$declinaisons[$i]['size_id']] = [
-                        'size' => $declinaisons[$i]['size'],
-                        'article_id' => $declinaisons[$i]['id']
-                    ];
-                }
-                if (!isset($article['colors'][$declinaisons[$i]['color_id']])) {
-                    $article[0]['colors'][$declinaisons[$i]['id']] = [
-                        'color' => $declinaisons[$i]['color_name'],
-                        'article_id' => $declinaisons[$i]['id']
-                    ];
-                }
-                if (!isset($article['quantity'][$declinaisons[$i]['color_name']])) {
-                    $article[0]['quantity'][$declinaisons[$i]['color_name']] = $declinaisons[$i]['qty'];
-                }
-            }
-            $result[] = $article[0];
+        foreach ($articles as $article) {
+            $statementImg = $this->pdo->prepare('SELECT url FROM image WHERE article_id=:article_id');
+            $statementImg->bindValue('article_id', $article['id'], \PDO::PARAM_INT);
+            $statementImg->execute();
+            $images = $statementImg->fetchAll();
+            $article['images'] = $images;
+            array_push($result, $article);
         }
-        // foreach ($result as $key => $value) {
-         //var_dump($result[0]);die;
-        // }
+
         return $result;
     }
 
@@ -74,29 +64,30 @@ class ArticleManager extends AbstractManager
 
         $declinaisons = $this->searchByModel($article['model']);
         for ($i = 0; $i < count($declinaisons); $i++) {
-            if (!isset($article['sizes'][$declinaisons[$i]['size_id']])) {
-                $article['sizes'][$declinaisons[$i]['size_id']] = [
+            if (!isset($article['colors'][$declinaisons[$i]['color_name']])) {
+                $article['colors'][$declinaisons[$i]['color_name']][] = [
                     'size' => $declinaisons[$i]['size'],
-                    'article_id' => $declinaisons[$i]['id']
-                ];
-            }
-            if (!isset($article['colors'][$declinaisons[$i]['color_id']])) {
-                $article['colors'][$declinaisons[$i]['color_id']] = [
                     'color' => $declinaisons[$i]['color_name'],
+                    'qty' => $declinaisons[$i]['qty'],
                     'article_id' => $declinaisons[$i]['id']
                 ];
             }
-            if (!isset($article['quantity'][$declinaisons[$i]['color_name']])) {
-                $article['quantity'][$declinaisons[$i]['color_name']] = $declinaisons[$i]['qty'];
+            if (isset($article['colors'][$declinaisons[$i]['color_name']])) {
+                $color = [
+                    'size' => $declinaisons[$i]['size'],
+                    'color' => $declinaisons[$i]['color_name'],
+                    'qty' => $declinaisons[$i]['qty'],
+                    'article_id' => $declinaisons[$i]['id']
+                ];
+                array_push($article['colors'][$declinaisons[$i]['color_name']], $color);
             }
         }
-
+        // var_dump($article);die;
         $statementImg = $this->pdo->prepare('SELECT id, url FROM image WHERE article_id=:article_id');
         $statementImg->bindValue('article_id', $id, \PDO::PARAM_INT);
         $statementImg->execute();
         $images = $statementImg->fetchAll();
         $article['images'] = $images;
-
         return $article;
     }
 
@@ -164,7 +155,6 @@ class ArticleManager extends AbstractManager
         $statement->execute();
         $articles = $statement->fetchAll();
 
-        $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
         $result = [];
         foreach ($articles as $article) {
             $statementImg = $this->pdo->prepare('SELECT url FROM image WHERE article_id=:article_id');
@@ -348,7 +338,6 @@ class ArticleManager extends AbstractManager
 
         $articles = $statement->fetchAll();
 
-        $images = $this->pdo->query('SELECT url, article_id FROM image')->fetchAll();
         $result = [];
         foreach ($articles as $article) {
             $statementImg = $this->pdo->prepare('SELECT url FROM image WHERE article_id=:article_id');

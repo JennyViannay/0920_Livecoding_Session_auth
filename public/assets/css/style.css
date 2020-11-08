@@ -97,6 +97,14 @@
     font-family: var(--big-title);
 }
 
+.simple-text {
+    font-family: var(--simple-text);
+}
+
+.box-shadow {
+    box-shadow: 3px 2px 6px grey;
+}
+
 /* LINK */
 
 a {
@@ -175,6 +183,7 @@ a:hover {
 }
 
 /* FOOTER */
+
 footer a {
     color: var(--white);
     font-family: var(--simple-text);
@@ -197,6 +206,55 @@ footer a:hover {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+/* IMAGES */
+
+.card-img-top {
+    width: 100%;
+    height: 20vw;
+    object-fit: cover;
+}
+
+/* BUTTON */
+
+.btn-green {
+    display: inline-block;
+    color: #fff;
+    background-color: var(--green);
+    border-color: var(--green);
+}
+
+.btn-green:hover {
+    display: inline-block;
+    color: var(--black);
+    background-color: var(--yellow);
+    border-color: var(--yellow);
+}
+
+/* BANNER PROMO */
+
+.marquee-rtl> :first-child {
+    display: inline-block;
+    /* modèle de boîte en ligne */
+    padding-right: 2em;
+    /* un peu d'espace pour la transition */
+    padding-left: 100%;
+    /* placement à droite du conteneur */
+    white-space: nowrap;
+    /* pas de passage à la ligne */
+    animation: defilement-rtl 15s infinite linear;
+}
+
+@keyframes defilement-rtl {
+    0% {
+        transform: translate3d(0, 0, 0);
+        /* position initiale à droite */
+    }
+    100% {
+        transform: translate3d(-100%, 0, 0);
+        /* position finale à gauche */
+    }
 }
 
 /* MEDIA QUERIES MOBILE */

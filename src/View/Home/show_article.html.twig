@@ -2,9 +2,9 @@
 {% block title %}{{article.model}}{% endblock %}
 {% block content %}
 <div class="container">
-    <div class="jumbotron mt-5">
+    <div class="border mt-5 p-5">
         <div class="row">
-            <div class="col-lg-4 col-md-4 col-xs-12">
+            <div class="col-lg-6 col-md-6 col-xs-12">
                 {% if article.images|length > 1 %}
                 <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner" style="height: 300px">
@@ -27,46 +27,51 @@
                     </a>
                 </div>
                 {% else %}
-                <img src="{{article.images[0].url}}" class="img-fluid" alt="" style="height: 300px">
+                <img src="{{article.images[0].url}}" class="img-fluid" alt="">
                 {% endif %}
             </div>
-            <div class="col-lg-8 col-md-8 col-xs-12">
+            <div class="col-lg-6 col-md-6 col-xs-12">
                 <div class="title">
-                    <h5 class="card-title">{{article.model}} - {{article.color_name}} - {{article.price}} $</h5>
+                    <h5 class="card-title big-title text-xxl">{{article.model}} - {{article.color_name}}</h5>
+                    <p class="big-title text-xl text-red">{{article.price}} $</p>
                     <p>Size : {{article.size}}</p>
+                    <div>
+                        Size Available :
+                        {% for key, color in article.colors %}
+                        {% if key == article.color_name %}
+                        {% for col in color %}
+                        {% if col.article_id != article.id %}
+                        <a href="/home/showArticle/{{col.article_id}}" class="simple-text text-red">{{col.size}}</a>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+                    </div>
                     {% if article.qty <= 2 %}
                     <p>Latest available pairs {{article.qty}}</p>
                     {% endif %}
+                    {% if article.qty == 0 %}
+                    <p class="text-red">Unavailable for now !</p>
+                    {% endif %}
                 </div>
                 {% if article.colors|length > 1 %}
-                <div class="col-12">
-                    Other color(s) :
-                    {% for color in article.colors %}
-                    {% if color.color != article.color_name %}
-                    <a href="/home/showArticle/{{color.article_id}}"
-                        class="btn rounded-circle bg-{{color.color|lower}} p-3 m-2"></a>
+                <div>
+                    Colors :
+                    {% for key in article.colors|keys %}
+                    {% if key != article.color_name %}
+                    <a href="/home/showArticle/{{key.article_id}}"
+                        class="btn rounded-circle bg-{{key|lower}} p-3 m-2 text-white"></a>
                     {% endif %}
                     {% endfor %}
                 </div>
                 {% endif %}
-                {% if article.sizes|length > 1 %}
-                <div class="col-12">
-                    Other size(s) :
-                    {% for size in article.sizes %}
-                    {% if size.size != article.size %}
-                    <a href="/home/showArticle/{{size.article_id}}"
-                        class="form-check-label small text-uppercase card-link-secondary">{{size.size}}</a>
-                    {% endif %}
-                    {% endfor %}
-                </div>
+                {% if article.qty > 0 %}
+                <form method="POST">
+                    <input type="text" class="d-none" name="add_article" value="{{article.id}}">
+                    <button type="submit" class="btn btn-green btn-lg btn-block mt-4"><i class="fas fa-cart-arrow-down"
+                            style="width: 100%"></i></a>
+                </form>
                 {% endif %}
-                <div class="col-12">
-                    <form method="POST">
-                        
-                        <input type="text" class="d-none" name="add_article" value="{{article.id}}">
-                        <button type="submit" class="btn btn-primary"><i class="fas fa-cart-arrow-down"></i></a>
-                    </form>
-                </div>
             </div>
         </div>
     </div>

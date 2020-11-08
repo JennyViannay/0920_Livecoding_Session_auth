@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>Projet 2 - {% block title %}{% endblock %}</title>
     <!-- fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
@@ -25,13 +24,12 @@
     <div class="container-fluid bg-yellow">
         <div class="container">
             <nav class="nav justify-content-end border-text">
-                <a class="nav-link-sm mx-3 my-1" href="#">Marketplace</a>
+                <a class="nav-link-sm mx-3 my-1" href="/home/articles">Marketplace</a>
                 <a class="nav-link-sm mx-3 my-1" href="#">Help & FAQ</a>
                 <a class="nav-link-sm mx-3 my-1" href="#">EN</a>
             </nav>
         </div>
     </div>
-
     <nav class="navbar navbar-expand-lg bg-black  d-none d-sm-block">
         <div class="container">
             <a class="navbar-brand text-xl text-white" href="/">E-Shop</a>
@@ -72,8 +70,6 @@
             {% endif %}
         </div>
     </nav>
-
-
     <nav class="nav d-sm-none bg-black">
         <a class="mx-3 mt-3 text-white text-xl" href="/">E-Shop</a>
         <form method="POST" class="mx-auto">
@@ -91,7 +87,10 @@
             </div>
         </form>
     </nav>
-
+    <div class="marquee-rtl bg-red box-shadow">
+        <!-- le contenu défilant -->
+        <div class="big-title">Lorem ipsum dolor sit amet consectetur adipisicing elit. Modi in impedit similique, quam qui ducimus ad amet, <span class="text-white">#POURQUOITUVEUXQUONAILLEENSOIREE</span>, quo magnam corporis delectus itaque nihil eligendi. Ex sit beatae praesentium quos.</div>
+    </div>
     <nav class="nav fixed-bottom justify-content-center d-sm-none bg-black">
         <a href="/" class="nav-link mx-3">
             <i class="fas fa-home text-white"></i>
@@ -117,9 +116,7 @@
         <a href="/security/login" class="nav-link mx-3"><i class="fas fa-sign-in-alt text-white"></i></a>
         {% endif %}
     </nav>
-
     {% block content %}{% endblock %}
-
     <div style="height: 150px"></div>
     <!-- Footer -->
     <footer class="page-footer font-small bg-black pt-4 text-white">
@@ -136,7 +133,7 @@
                 <!-- Grid column -->
                 <hr class="clearfix w-100 d-md-none pb-3">
                 <!-- Grid column -->
-                <div class="col-md-2 mb-md-0 mb-3">
+                <div class="col-md-2 mb-md-0 mb-3 text-center">
                     <!-- Links -->
                     <h5 class="text-uppercase text-white big-title">Contact</h5>
                     <ul class="list-unstyled">
@@ -147,25 +144,29 @@
                 </div>
                 <!-- Grid column -->
                 <!-- Grid column -->
-                <div class="col-md-2 mb-md-0 mb-3">
+                <div class="col-md-2 mb-md-0 mb-3 text-center">
                     <!-- Links -->
                     <h5 class="text-uppercase text-white big-title">Help & Infos</h5>
                     <ul class="list-unstyled">
                         <li><a href="#!">Delivery</a></li>
                         <li><a href="#!">Assistant</a></li>
-                        <li><a href="#!">Mobile & Appli</a></li>
+                        <li><a href="#!">Mobile & App</a></li>
                     </ul>
                 </div>
                 <!-- Grid column -->
                 <!-- Grid column -->
-                <div class="col-md-2 mb-md-0 mb-3">
+                <div class="col-md-2 mb-md-0 mb-3 text-center">
                     <!-- Links -->
                     <h5 class="text-uppercase text-white big-title">Follow Us</h5>
                     <ul class="list-unstyled">
                         <li>
                             <ul class="list-inline">
-                                <li class="list-inline-item"><a href="#!"><i class="fab fa-facebook"></i></a></li>
-                                <li class="list-inline-item"><a href="#!"><i class="fab fa-instagram"></i></a></li>
+                                <li class="list-inline-item"><a href="#!"><i class="fab fa-facebook text-xl"></i></a>
+                                </li>
+                                <li class="list-inline-item"><a href="#!"><i class="fab fa-instagram text-xl"></i></a>
+                                </li>
+                                <li class="list-inline-item"><a href="#!"><i class="fab fa-snapchat text-xl"></i></a>
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -180,7 +181,6 @@
             <a href="https://github.com/JennyViannay" target="_blank"> Jenny Viannay</a>
         </div>
         <!-- Copyright -->
-
     </footer>
     <!-- Footer -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
