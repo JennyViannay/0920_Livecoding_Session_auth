@@ -11,7 +11,6 @@ class SecurityController extends AbstractController
     {
         $roleManager = new RoleManager();
         $userManager = new UserManager();
-        $error = null;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['email']) && !empty($_POST['password'])) {
                 $user = $userManager->search($_POST['email']);
@@ -22,25 +21,26 @@ class SecurityController extends AbstractController
                         $_SESSION['role'] = $roleManager->selectOneById($user->role_id)['name'];
                         header('Location:/home/articles');
                     } else {
-                        $_SESSION['flash_message'] = ["Password incorrect !"];
+                        $_SESSION['flash_message'] = ["Password wrong !"];
+                        header('Location:/security/login');
                     }
                 } else {
                     $_SESSION['flash_message'] = ['User not found'];
+                    header('Location:/security/login');
                 }
             } else {
                 $_SESSION['flash_message'] = ['Tous les champs sont obligatoires !'];
+                header('Location:/security/login');
             }
         }
-        return $this->twig->render('Security/login.html.twig', [
-            'error' => $error
-        ]);
+        return $this->twig->render('Security/login.html.twig');
     }
 
     public function register()
     {
         $userManager = new UserManager();
         $roleManager = new RoleManager();
-        $error = null;
+        $error = false;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($_POST['email']) &&
                 !empty($_POST['username']) &&
@@ -48,23 +48,28 @@ class SecurityController extends AbstractController
                 !empty($_POST['password2'])) {
                 $user = $userManager->search($_POST['email']);
                 if ($user) {
+                    $error = true;
                     $_SESSION['flash_message'] = ['Email already exist'];
+                    header('Location:/security/register');
                 }
                 if ($_POST['password'] != $_POST['password2']) {
+                    $error = true;
                     $_SESSION['flash_message'] = ['Password do not match'];
+                    header('Location:/security/register');
                 }
-                if ($error === null) {
+                if ($error === false) {
+                    $role = $roleManager->getRoleUser();
                     $user = [
                         'email' => $_POST['email'],
                         'username' => $_POST['username'],
                         'password' => md5($_POST['password']),
-                        'role_id' => $roleManager->getRoleUserId()
+                        'role_id' => $role['id']
                     ];
                     $idUser = $userManager->insert($user);
                     if ($idUser) {
                         $_SESSION['username'] = $user['email'];
                         $_SESSION['id'] = $idUser;
-                        $_SESSION['role_id'] = $user['role_id'];
+                        $_SESSION['role'] = $roleManager->selectOneById($user['role_id'])['name'];
                         header('Location:/home/index');
                     }
                 }
