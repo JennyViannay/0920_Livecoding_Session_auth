@@ -1,13 +1,4 @@
 <?php
-/**
- * This file dispatch routes.
- *
- * PHP version 7
- *
- * @author   WCS <contact@wildcodeschool.fr>
- *
- * @link     https://github.com/WildCodeSchool/simple-mvc
- */
 
 $routeParts = explode('/', ltrim($_SERVER['REQUEST_URI'], '/') ?: HOME_PAGE);
 $controller = 'App\Controller\\' . ucfirst($routeParts[0] ?? '') . 'Controller';

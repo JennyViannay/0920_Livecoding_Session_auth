@@ -119,7 +119,6 @@
                 {% endfor %}
             </tbody>
         </table>
-
     </form>
     <div class="jumbotron my-5">
         <h2 class="text-black big-title">Total panier : {{total}} $</h2>
@@ -144,10 +143,8 @@
                 <label for="address">Adresse *</label>
                 <input type="text" class="form-control" name="address" id="address">
             </div>
-            <!-- STRIPE -->
             <input type='text' id="token" name='stripeToken' style="display: none" value="">
             <div id="card" class="my-5"></div>
-            <!-- END STRIPE -->
             <div class="small">* Champs obligatoires</div>
             <div class="text-center my-4">
                 <button type="submit" class="btn btn-primary disabled" id="submit">Valider mon panier</button>
