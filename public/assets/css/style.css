@@ -232,6 +232,20 @@ footer a:hover {
     border-color: var(--yellow);
 }
 
+.btn-yellow {
+    display: inline-block;
+    color: #fff;
+    background-color: var(--yellow);
+    border-color: var(--yellow);
+}
+
+.btn-yellow:hover {
+    display: inline-block;
+    color: var(--black);
+    background-color: var(--green);
+    border-color: var(--green);
+}
+
 .btn-red {
     display: inline-block;
     color: var(--white);

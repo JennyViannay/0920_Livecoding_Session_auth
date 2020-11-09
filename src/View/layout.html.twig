@@ -34,7 +34,7 @@
     <nav class="navbar navbar-expand-lg bg-black d-none d-sm-block">
         <div class="container">
             <a class="navbar-brand text-xl text-white" href="/">E-Shop</a>
-            <form method="POST">
+            <form method="POST" action="/home/articles">
                 <div class="row mt-3">
                     <div class="col-10">
                         <div class="form-group">
@@ -74,7 +74,7 @@
 
     <nav class="nav d-sm-none bg-black">
         <a class="mx-3 mt-3 text-white text-xl" href="/">E-Shop</a>
-        <form method="POST" class="mx-auto">
+        <form action="/home/articles" method="POST" class="mx-auto">
             <div class="row mt-3">
                 <div class="col-8">
                     <div class="form-group">
@@ -123,23 +123,15 @@
 
     {% block content %}{% endblock %}
     <div style="height: 150px"></div>
-    <!-- Footer -->
     <footer class="page-footer font-small bg-black pt-4 text-white">
-        <!-- Footer Links -->
         <div class="container-fluid text-center text-md-left">
-            <!-- Grid row -->
             <div class="row">
-                <!-- Grid column -->
                 <div class="col-md-6 mt-md-0 mt-3">
-                    <!-- Content -->
                     <h5 class="text-xxl big-title text-white text-uppercase">e-shop</h5>
                     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sure ex aut distinctio maxime rem!</p>
                 </div>
-                <!-- Grid column -->
                 <hr class="clearfix w-100 d-md-none pb-3">
-                <!-- Grid column -->
                 <div class="col-md-2 mb-md-0 mb-3 text-center">
-                    <!-- Links -->
                     <h5 class="text-uppercase text-white big-title">Contact</h5>
                     <ul class="list-unstyled">
                         <li><a href="#!">Contact Us</a></li>
@@ -147,10 +139,7 @@
                         <li><a href="#!">FAQ</a></li>
                     </ul>
                 </div>
-                <!-- Grid column -->
-                <!-- Grid column -->
                 <div class="col-md-2 mb-md-0 mb-3 text-center">
-                    <!-- Links -->
                     <h5 class="text-uppercase text-white big-title">Help & Infos</h5>
                     <ul class="list-unstyled">
                         <li><a href="#!">Delivery</a></li>
@@ -158,10 +147,7 @@
                         <li><a href="#!">Mobile & App</a></li>
                     </ul>
                 </div>
-                <!-- Grid column -->
-                <!-- Grid column -->
                 <div class="col-md-2 mb-md-0 mb-3 text-center">
-                    <!-- Links -->
                     <h5 class="text-uppercase text-white big-title">Follow Us</h5>
                     <ul class="list-unstyled">
                         <li>
@@ -176,18 +162,12 @@
                         </li>
                     </ul>
                 </div>
-                <!-- Grid column -->
             </div>
-            <!-- Grid row -->
         </div>
-        <!-- Footer Links -->
-        <!-- Copyright -->
         <div class="footer-copyright text-center py-3 bg-black">© 2020 Copyright :
             <a href="https://github.com/JennyViannay" target="_blank"> Jenny Viannay</a>
         </div>
-        <!-- Copyright -->
     </footer>
-    <!-- Footer -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
         crossorigin="anonymous"></script>

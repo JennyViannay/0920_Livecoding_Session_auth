@@ -155,6 +155,7 @@
         </form>
     </div>
     {% endif %}
+    {% if session.username is defined %}
     <h3 class="big-title text-red">Wishlist</h3>
     <div class="col-12 my-5">
         <div class="row">
@@ -223,6 +224,9 @@
             {% endfor %}
         </div>
     </div>
+    {% else %}
+    <h3 class="big-title text-red text-center"><a href="/security/login">Log In</a> to see your Wishlist</h3>
+    {% endif %}
 </div>
 {% endblock %}
 
