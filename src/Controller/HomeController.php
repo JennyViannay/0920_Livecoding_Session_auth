@@ -14,31 +14,17 @@ class HomeController extends AbstractController
 {
     public function index()
     {
-        $cartService = new CartService();
         $articleManager = new ArticleManager();
-        $filterService = new FilterService();
-
         $articles = $articleManager->selectNineLast();
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['add_article'])) {
-                $article = $_POST['add_article'];
-                $cartService->add($article);
-            }
-            if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
-                $articles = $filterService->search($_POST);
-            }
-        }
 
         return $this->twig->render('Home/index.html.twig', [
             'articles' => $articles
         ]);
     }
     
-    public function articles(array $article = null)
+    public function articles(array $articles = null)
     {
         $result = [];
-        $cartService = new CartService();
         $filterService = new FilterService();
 
         $brandManager = new BrandManager();
@@ -54,12 +40,11 @@ class HomeController extends AbstractController
         $articles = $articleManager->selectAll();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['add_article'])) {
-                $article = $_POST['add_article'];
-                $cartService->add($article);
-            }
-            if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
+            if (isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
                 $articles = $filterService->getArticlesFromSearch($_POST);
+            }
+            if (isset($_POST['search']) && !empty($_POST['search'])) {
+                $articles = $articleManager->searchByModel($_POST['search']);
             }
         }
 
@@ -132,6 +117,7 @@ class HomeController extends AbstractController
                     $cartService->payment($_POST);
                 } else {
                     $_SESSION['flash_message'] = ["Tous les champs sont obligatoires !"];
+                    header('Location:/home/cart');
                 }
             }
             if (isset($_POST['update_cart'])) {
@@ -141,7 +127,7 @@ class HomeController extends AbstractController
                 $article = $_POST['add_article'];
                 $cartService->add($article);
             }
-            if (isset($_POST['search']) || isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
+            if (isset($_POST['brand_id']) || isset($_POST['color_id']) || isset($_POST['size_id'])) {
                 $filterService->getArticlesFromSearch($_POST);
             }
         }
@@ -154,15 +140,17 @@ class HomeController extends AbstractController
             $wishlist = $wishlistManager->getWishlistByUser($_SESSION['id']);
         }
 
-        if (isset($_SESSION['cart'])){
+        if (isset($_SESSION['cart'])) {
             $suggest = $cartService->suggest();
         }
 
-        foreach ($wishlist as $wish) {
-            $article = $articleManager->selectOneById($wish['article_id']);
-            $article['wishlist_id'] = $wish['id'];
-            $article['is_liked'] = 'true'; 
-            $articlesDetails[] = $article;
+        if ($wishlist != null) {
+            foreach ($wishlist as $wish) {
+                $article = $articleManager->selectOneById($wish['article_id']);
+                $article['wishlist_id'] = $wish['id'];
+                $article['is_liked'] = 'true'; 
+                $articlesDetails[] = $article;
+            }
         }
 
         return $this->twig->render('Home/cart.html.twig', [
@@ -189,10 +177,7 @@ class HomeController extends AbstractController
             ];
             $wishlistManager->insert($wish);
             header('Location:/');
-        } else {
-            $_SESSION['flash_message'] = ['Article déjà dans votre wishlist'];
-            header('Location:/');
-        }
+        } 
     }
 
     public function dislike(int $id)

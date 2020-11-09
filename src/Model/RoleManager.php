@@ -30,8 +30,8 @@ class RoleManager extends AbstractManager
         return $statement->fetch();
     }
 
-    public function getRoleUserId()
+    public function getRoleUser()
     {
-        return $this->pdo->query("SELECT `id` FROM $this->table WHERE `name`='user'")->fetch();
+        return $this->pdo->query("SELECT id, name FROM $this->table WHERE name='user'")->fetch();
     }
 }
