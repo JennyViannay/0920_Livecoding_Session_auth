@@ -20,7 +20,7 @@ class SecurityController extends AbstractController
                         $_SESSION['username'] = $user->email;
                         $_SESSION['id'] = $user->id;
                         $_SESSION['role'] = $roleManager->selectOneById($user->role_id)['name'];
-                        header('Location:/admin/index');
+                        header('Location:/home/articles');
                     } else {
                         $_SESSION['flash_message'] = ["Password incorrect !"];
                     }
@@ -31,7 +31,7 @@ class SecurityController extends AbstractController
                 $_SESSION['flash_message'] = ['Tous les champs sont obligatoires !'];
             }
         }
-        return $this->twig->render('Admin/login.html.twig', [
+        return $this->twig->render('Security/login.html.twig', [
             'error' => $error
         ]);
     }
@@ -62,15 +62,15 @@ class SecurityController extends AbstractController
                     ];
                     $idUser = $userManager->insert($user);
                     if ($idUser) {
-                        $_SESSION['username'] = $user->email;
-                        $_SESSION['id'] = $user->id;
-                        $_SESSION['role_id'] = $user->role_id;
-                        header('Location:/admin/index');
+                        $_SESSION['username'] = $user['email'];
+                        $_SESSION['id'] = $idUser;
+                        $_SESSION['role_id'] = $user['role_id'];
+                        header('Location:/home/index');
                     }
                 }
             }
         }
-        return $this->twig->render('Admin/register.html.twig', [
+        return $this->twig->render('Security/register.html.twig', [
             'error' => $error
         ]);
     }
